@@ -1,15 +1,9 @@
 import { NextRequest, NextResponse } from "next/server"
 import OpenAI from "openai"
 
-// Lazy initialization of OpenAI client
-function getOpenAIClient() {
-    if (!process.env.OPENAI_API_KEY) {
-        throw new Error("OPENAI_API_KEY is not configured")
-    }
-    return new OpenAI({
-        apiKey: process.env.OPENAI_API_KEY,
-    })
-}
+const openai = new OpenAI({
+    apiKey: process.env.OPENAI_API_KEY,
+})
 
 // Simple rate limiting (in production, use Redis or similar)
 const rateLimitMap = new Map<string, { count: number; resetTime: number }>()
@@ -109,7 +103,6 @@ RESPONSE STYLE:
 
 Remember: You're part of the NerdsOnCall ecosystem, designed to complement human tutors, not replace them.`
 
-        const openai = getOpenAIClient()
         const completion = await openai.chat.completions.create({
             model: "gpt-4o",
             messages: [
