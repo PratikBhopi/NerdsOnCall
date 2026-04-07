@@ -13,7 +13,6 @@ import {
 import toast from "react-hot-toast"
 import { Phone, PhoneOff, User } from "lucide-react"
 import { VideoCallModal } from "./VideoCallModal"
-import { api } from "@/lib/api"
 
 interface TutorCallNotificationProps {
     onCallReceived?: (studentId: number, studentName: string) => void
@@ -140,13 +139,8 @@ export function TutorCallNotification({
                 addLog("WebSocket connection established")
                 setIsConnected(true)
 
-                // Update tutor's online status in the database (non-blocking)
-                // Use setTimeout to avoid blocking the WebSocket connection
-                setTimeout(() => {
-                    updateOnlineStatus(true).catch(() => {
-                        // Silently handle the error as it's already logged in updateOnlineStatus
-                    })
-                }, 100)
+                // Note: Online status is now managed manually by tutors via dashboard toggle
+                // No automatic status updates on WebSocket connection
             }
 
             socketRef.current.onmessage = handleWebSocketMessage
@@ -157,13 +151,8 @@ export function TutorCallNotification({
                 )
                 setIsConnected(false)
 
-                // Update tutor's online status in the database (non-blocking)
-                // Use setTimeout to avoid blocking the reconnection logic
-                setTimeout(() => {
-                    updateOnlineStatus(false).catch(() => {
-                        // Silently handle the error as it's already logged in updateOnlineStatus
-                    })
-                }, 100)
+                // Note: Online status is now managed manually by tutors via dashboard toggle
+                // No automatic status updates on WebSocket disconnect
 
                 // Only reconnect if it wasn't a manual close
                 if (event.code !== 1000) {
@@ -194,34 +183,12 @@ export function TutorCallNotification({
         socketRef.current = null
         setIsConnected(false)
 
-        // Update tutor's online status in the database (non-blocking)
-        // Use setTimeout to avoid blocking component unmounting
-        setTimeout(() => {
-            updateOnlineStatus(false).catch(() => {
-                // Silently handle the error as it's already logged in updateOnlineStatus
-            })
-        }, 100)
+        // Note: Online status is now managed manually by tutors via dashboard toggle
+        // No automatic status updates on component unmount
     }
 
-    // Update tutor's online status in the database
-    const updateOnlineStatus = async (isOnline: boolean) => {
-        try {
-            // Use the api utility which handles authentication properly
-            await api.put(`/users/online-status?isOnline=${isOnline}`)
-            addLog(`Online status updated to: ${isOnline}`)
-        } catch (error: any) {
-            if (error.name === "AbortError") {
-                addLog(`Online status update timed out`)
-            } else if (error.message.includes("Failed to fetch")) {
-                addLog(
-                    `Network error updating online status - server may be offline`
-                )
-            } else {
-                addLog(`Failed to update online status: ${error.message}`)
-            }
-            // Don't throw the error to prevent it from breaking the WebSocket connection
-        }
-    }
+    // Note: Online status management has been moved to dashboard manual toggle
+    // The updateOnlineStatus function is no longer needed here
 
     // Handle WebSocket messages
     const handleWebSocketMessage = (event: MessageEvent) => {

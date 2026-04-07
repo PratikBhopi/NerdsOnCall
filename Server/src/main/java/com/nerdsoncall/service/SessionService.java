@@ -79,8 +79,10 @@ public class SessionService {
         
         // Calculate duration
         if (session.getStartTime() != null) {
-            long duration = java.time.Duration.between(session.getStartTime(), session.getEndTime()).toMinutes();
-            session.setDurationMinutes(duration);
+            // Calculate duration in seconds first, then convert to minutes with proper rounding
+            long durationSeconds = java.time.Duration.between(session.getStartTime(), session.getEndTime()).getSeconds();
+            long durationMinutes = Math.max(1, (durationSeconds + 30) / 60); // Round up to nearest minute, minimum 1 minute
+            session.setDurationMinutes(durationMinutes);
         }
         
         return sessionRepository.save(session);
@@ -222,10 +224,12 @@ public class SessionService {
             
             // Calculate duration and earnings using actualStartTime
             if (session.getActualStartTime() != null) {
-                long durationMinutes = java.time.Duration.between(session.getActualStartTime(), session.getEndTime()).toMinutes();
+                // Calculate duration in seconds first, then convert to minutes with proper rounding
+                long durationSeconds = java.time.Duration.between(session.getActualStartTime(), session.getEndTime()).getSeconds();
+                long durationMinutes = Math.max(1, (durationSeconds + 30) / 60); // Round up to nearest minute, minimum 1 minute
                 session.setDurationMinutes(durationMinutes);
 
-                System.out.println("Session duration: " + durationMinutes + " minutes (from " + session.getActualStartTime() + " to " + session.getEndTime() + ")");
+                System.out.println("Session duration: " + durationMinutes + " minutes (from " + session.getActualStartTime() + " to " + session.getEndTime() + ", raw seconds: " + durationSeconds + ")");
 
                 // Calculate earnings: ₹50 per hour (₹50/60 per minute)
                 double hourlyRate = 50.0; // ₹50 per hour

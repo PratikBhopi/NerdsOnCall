@@ -77,15 +77,26 @@ export default function BrowseTutorsPage() {
   const fetchTutors = async () => {
     try {
       setLoading(true);
-      // Fetch all tutors and do filtering client-side for better responsiveness
-      const response = await api.get("/api/tutors", {
-        params: {
-          onlineOnly: true,
-        },
-      });
+      // Fetch online tutors using the new TutorStatus service
+      const response = await api.get("/users/tutors/online");
+      console.log("Online tutors fetched:", response.data.length);
       setTutors(response.data);
     } catch (error) {
-      console.error("Error fetching tutors:", error);
+      console.error("Error fetching online tutors:", error);
+      // Fallback to all tutors and filter client-side
+      try {
+        const fallbackResponse = await api.get("/users/tutors");
+        console.log("Fallback: All tutors fetched:", fallbackResponse.data.length);
+        
+        // Filter for only online tutors on the frontend
+        const onlineTutors = fallbackResponse.data.filter((tutor: any) => tutor.isOnline === true);
+        console.log("Fallback: Online tutors after filtering:", onlineTutors.length);
+        
+        setTutors(onlineTutors);
+      } catch (fallbackError) {
+        console.error("Fallback fetch also failed:", fallbackError);
+        setTutors([]);
+      }
     } finally {
       setLoading(false);
     }
@@ -130,6 +141,9 @@ export default function BrowseTutorsPage() {
 
     let filtered = [...tutors];
 
+    // Additional safety check - only show online tutors
+    filtered = filtered.filter((tutor) => tutor.isOnline === true);
+
     // Filter by search query
     if (searchQuery) {
       filtered = filtered.filter(
@@ -168,11 +182,13 @@ export default function BrowseTutorsPage() {
 
     console.log("Filtered result:", {
       filteredCount: filtered.length,
+      onlineTutors: filtered.filter(t => t.isOnline).length,
       sampleTutor: filtered[0]
         ? {
             name: `${filtered[0].firstName} ${filtered[0].lastName}`,
             subjects: filtered[0].subjects,
             rating: filtered[0].rating,
+            isOnline: filtered[0].isOnline,
           }
         : null,
     });

@@ -65,11 +65,28 @@ export default function SelectTutorPage() {
     const fetchTutors = async () => {
         try {
             setLoading(true)
-            const response = await api.get("/users/tutors")
+            // Fetch online tutors using the new TutorStatus service
+            const response = await api.get("/users/tutors/online")
+            console.log("Online tutors fetched:", response.data.length)
             setTutors(response.data)
         } catch (error) {
-            console.error("Error fetching tutors:", error)
-            setTutors([])
+            console.error("Error fetching online tutors:", error)
+            // Fallback to all tutors and filter client-side
+            try {
+                const fallbackResponse = await api.get("/users/tutors")
+                console.log("Fallback: All tutors fetched:", fallbackResponse.data.length)
+                
+                // Filter for only online tutors on the frontend
+                const onlineTutors = fallbackResponse.data.filter(
+                    (tutor: Tutor) => tutor.isOnline === true
+                )
+                console.log("Fallback: Online tutors after filtering:", onlineTutors.length)
+                
+                setTutors(onlineTutors)
+            } catch (fallbackError) {
+                console.error("Fallback fetch also failed:", fallbackError)
+                setTutors([])
+            }
         } finally {
             setLoading(false)
         }
@@ -116,7 +133,10 @@ export default function SelectTutorPage() {
             selectedSubject === "all" ||
             tutor.subjects.includes(selectedSubject)
 
-        return matchesSearch && matchesSubject
+        // Additional safety check - only show online tutors
+        const isOnline = tutor.isOnline === true
+
+        return matchesSearch && matchesSubject && isOnline
     })
 
     const handleAskDoubt = (tutorId: number) => {

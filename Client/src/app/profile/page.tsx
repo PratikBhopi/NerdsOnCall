@@ -57,7 +57,7 @@ const subjectsList: Subject[] = [
 ]
 
 export default function ProfilePage() {
-    const { user } = useAuth()
+    const { user, setUser } = useAuth()
     const router = useRouter()
     const [isEditing, setIsEditing] = useState(false)
     const [loading, setLoading] = useState(false)
@@ -80,6 +80,7 @@ export default function ProfilePage() {
                 firstName: response.data.firstName || "",
                 lastName: response.data.lastName || "",
                 phoneNumber: response.data.phoneNumber || "",
+                profilePicture: response.data.profilePicture || "",
                 bio: response.data.bio || "",
                 subjects: response.data.subjects || [],
                 hourlyRate: response.data.hourlyRate || "",
@@ -105,6 +106,7 @@ export default function ProfilePage() {
             setLoading(true)
             const response = await api.put("/users/profile", editData)
             setProfileData(response.data)
+            setUser(response.data)
             setIsEditing(false)
             toast.success("Profile updated successfully!")
         } catch (error: any) {
@@ -120,6 +122,7 @@ export default function ProfilePage() {
             firstName: profileData?.firstName || "",
             lastName: profileData?.lastName || "",
             phoneNumber: profileData?.phoneNumber || "",
+            profilePicture: profileData?.profilePicture || "",
             bio: profileData?.bio || "",
             subjects: profileData?.subjects || [],
             hourlyRate: profileData?.hourlyRate || "",
@@ -312,6 +315,33 @@ export default function ProfilePage() {
 
                                     <div>
                                         <label className="block text-sm font-medium text-slate-700 mb-1">
+                                            Profile Picture URL
+                                        </label>
+                                        {isEditing ? (
+                                            <Input
+                                                value={editData.profilePicture}
+                                                onChange={(e) =>
+                                                    setEditData({
+                                                        ...editData,
+                                                        profilePicture:
+                                                            e.target.value,
+                                                    })
+                                                }
+                                                placeholder="Enter profile picture URL"
+                                            />
+                                        ) : (
+                                            <div className="flex items-center space-x-2">
+                                                <User className="h-4 w-4 text-slate-400" />
+                                                <p className="text-slate-800">
+                                                    {profileData.profilePicture ||
+                                                        "Not provided"}
+                                                </p>
+                                            </div>
+                                        )}
+                                    </div>
+
+                                    <div>
+                                        <label className="block text-sm font-medium text-slate-700 mb-1">
                                             Role
                                         </label>
                                         <Badge
@@ -320,11 +350,10 @@ export default function ProfilePage() {
                                                     ? "default"
                                                     : "secondary"
                                             }
-                                            className={`w-fit ${
-                                                isTutor
-                                                    ? "bg-slate-700 text-white"
-                                                    : "bg-slate-100 text-slate-700"
-                                            }`}
+                                            className={`w-fit ${isTutor
+                                                ? "bg-slate-700 text-white"
+                                                : "bg-slate-100 text-slate-700"
+                                                }`}
                                         >
                                             {isTutor && (
                                                 <Crown className="w-4 h-4 mr-1" />

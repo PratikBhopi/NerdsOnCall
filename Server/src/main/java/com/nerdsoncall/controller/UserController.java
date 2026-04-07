@@ -1,8 +1,10 @@
 package com.nerdsoncall.controller;
 
 import com.nerdsoncall.entity.User;
+import com.nerdsoncall.entity.TutorStatus;
 import com.nerdsoncall.service.UserService;
 import com.nerdsoncall.service.DashboardService;
+import com.nerdsoncall.service.TutorStatusService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
@@ -21,6 +23,9 @@ public class UserController {
 
     @Autowired
     private DashboardService dashboardService;
+    
+    @Autowired
+    private TutorStatusService tutorStatusService;
 
     @GetMapping("/profile")
     public ResponseEntity<?> getUserProfile(Authentication authentication) {
@@ -68,9 +73,9 @@ public class UserController {
             List<User> tutors;
             if (subject != null) {
                 User.Subject subjectEnum = User.Subject.valueOf(subject.toUpperCase());
-                tutors = userService.findOnlineTutorsBySubject(subjectEnum);
+                tutors = tutorStatusService.getOnlineTutorsBySubject(subjectEnum);
             } else {
-                tutors = userService.findOnlineTutors();
+                tutors = tutorStatusService.getOnlineTutors();
             }
             return ResponseEntity.ok(tutors);
         } catch (Exception e) {
@@ -111,8 +116,24 @@ public class UserController {
             User user = userService.findByEmail(authentication.getName())
                     .orElseThrow(() -> new RuntimeException("User not found"));
             
-            User updatedUser = userService.updateOnlineStatus(user.getId(), isOnline);
-            return ResponseEntity.ok(updatedUser);
+            // Check if user is a tutor
+            if (user.getRole() != User.Role.TUTOR) {
+                return ResponseEntity.badRequest().body("Only tutors can update online status");
+            }
+            
+            // Update status in TutorStatus table
+            TutorStatus.Status status = isOnline ? TutorStatus.Status.ONLINE : TutorStatus.Status.OFFLINE;
+            TutorStatus tutorStatus = tutorStatusService.setTutorStatus(user.getId(), status);
+            
+            // Return user with updated status info
+            Map<String, Object> response = Map.of(
+                "user", user,
+                "isOnline", tutorStatus.isOnline(),
+                "status", tutorStatus.getStatus().toString(),
+                "lastUpdated", tutorStatus.getLastUpdated()
+            );
+            
+            return ResponseEntity.ok(response);
         } catch (Exception e) {
             return ResponseEntity.badRequest().body("Failed to update online status: " + e.getMessage());
         }
