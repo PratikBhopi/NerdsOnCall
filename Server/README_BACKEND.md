@@ -1,176 +1,153 @@
-# NerdsOnCall Backend
+# NerdsOnCall — Backend
 
-Spring Boot service that powers the NerdsOnCall doubt-solving platform.
+Spring Boot API for [NerdsOnCall](https://nerds-on-call.vercel.app/).
+
+| | |
+| --- | --- |
+| **Production** | [https://nerdsoncall-api.shivam.app](https://nerdsoncall-api.shivam.app) |
+| **Health** | [GET /health](https://nerdsoncall-api.shivam.app/health) |
+| **DB health** | [GET /health/db](https://nerdsoncall-api.shivam.app/health/db) |
+| **Frontend (CORS / emails)** | [https://nerds-on-call.vercel.app](https://nerds-on-call.vercel.app) |
 
 ## Stack
 
-- Java 17, Spring Boot 3.2.0
-- Spring Web, Spring Security, Spring Data JPA, Spring WebSocket, Spring Mail
-- PostgreSQL (JPA / Hibernate)
-- JWT auth (`io.jsonwebtoken`)
-- Razorpay Java SDK (payments + payouts)
-- Cloudinary SDK (image / video uploads)
-- iText 7 (PDF receipt generation)
-- `me.paulschwarz:spring-dotenv` for `.env` loading
+- Java 17, Spring Boot 3.2
+- Spring Web, Security, Data JPA, WebSocket, Mail
+- **PostgreSQL** (JPA / Hibernate)
+- JWT (`io.jsonwebtoken`)
+- Razorpay Java SDK
+- Cloudinary SDK
+- iText 7 (PDF receipts)
+- `spring-dotenv` → loads `Server/.env`
 
-## Running locally
+Not used: Supabase, Socket.IO, STOMP, MySQL, MongoDB.
+
+## Run locally
 
 ```bash
-mvn spring-boot:run                       # default profile, uses Server/.env
-mvn spring-boot:run -Dspring-boot.run.profiles=local   # uses application-local.yml
+cd Server
+# Configure Server/.env (see .env.example)
+mvn spring-boot:run
 ```
 
-Server starts on `http://localhost:${PORT:8080}`. JPA runs with
-`ddl-auto: update` by default and `create-drop` in the `local` profile.
+- API: [http://localhost:8080](http://localhost:8080)
+- Profile `local`: `mvn spring-boot:run -Dspring-boot.run.profiles=local` (`application-local.yml`, `ddl-auto: create-drop`)
 
 ## Configuration
 
 | File | Purpose |
 | --- | --- |
-| `application.yml` | Main config; reads everything from env vars |
-| `application-local.yml` | Convenience profile for local dev (`create-drop`) |
-| `Server/.env` | Local environment variables (auto-loaded by `spring-dotenv`) |
+| `application.yml` | Main config from environment variables |
+| `application-local.yml` | Optional local dev profile |
+| `Server/.env` | Secrets and URLs (git-ignored) |
 
-See the root `README.md` for the full list of required environment variables.
+### Required environment variables
 
-## Database schema
+| Variable | Purpose |
+| --- | --- |
+| `PORT` | Listen port (default `8080`; Nginx proxies in production) |
+| `FRONTEND_URL` | Frontend base URL (e.g. `https://nerds-on-call.vercel.app`) |
+| `DB_URL` | `jdbc:postgresql://host:5432/dbname` |
+| `DB_USERNAME`, `DB_PASSWORD` | PostgreSQL credentials |
+| `JWT_SECRET` | Long random secret (production) |
+| `MAIL_USERNAME`, `MAIL_PASSWORD` | Gmail SMTP (app password) |
+| `RAZORPAY_KEY_ID`, `RAZORPAY_KEY_SECRET` | Razorpay |
+| `CLOUDINARY_CLOUD_NAME`, `CLOUDINARY_API_KEY`, `CLOUDINARY_API_SECRET` | Media uploads |
 
-JPA generates the schema from the entities in `com.nerdsoncall.entity`:
+Optional: `SPRING_PROFILES_ACTIVE=production`
 
-- `users` — students, tutors, admins (`role`); tutors have `bio`, `subjects`,
-  `rating`, `hourlyRate`, `totalEarnings`, `razorpayContactId`.
-- `doubts` — student-raised doubts (subject, title, description, priority,
-  status, optional `preferredTutorId`).
-- `sessions` — tutoring sessions linked to a doubt (and optionally direct
-  call sessions). Tracks status, timing, cost, `tutorEarnings`, payment status.
-- `subscriptions` — student plans tied to a Razorpay order. Status starts at
-  `PENDING` and only flips to `ACTIVE` after payment signature verification.
-- `feedbacks` — post-session ratings (1–5) and comments, in either direction.
-- `payouts` — monthly tutor payouts grouped over a date range.
-- Subscription plans are defined in code (`SubscriptionPlanCatalog`), not in
-  the database. The legacy `plans` table is no longer used.
-- `tutor_status` — tutor availability / online state.
-- `common_questions` — public Q&A: student questions + tutor solutions (with
-  optional Cloudinary-hosted video answer).
+## Production deployment (summary)
 
-Hand-written SQL migrations live in `src/main/resources/db/migration/` for
-columns that are added to existing tables outside JPA's reach.
+Typical layout on a VPS (e.g. Oracle Always Free):
+
+1. PostgreSQL on the same machine (`localhost`)
+2. `java -jar app.jar` via **systemd**, bound to `127.0.0.1:8080`
+3. **Nginx** — HTTPS (Let's Encrypt), proxy `/` and `/ws/*` with WebSocket upgrade headers
+4. Do **not** expose port 8080 publicly
+
+Frontend on Vercel must use `NEXT_PUBLIC_API_URL=https://nerdsoncall-api.shivam.app` so REST and **WSS** work from an HTTPS page.
 
 ## HTTP API
 
-All endpoints are relative to the server base URL.
+Base URL: production host above, or `http://localhost:8080` locally.
 
 ### Discovery
 
 | Method | Path | Description |
 | --- | --- | --- |
-| GET | `/` | Static landing page |
-| GET | `/info`, `/welcome` | JSON service info and endpoint map |
-| GET | `/health` | Liveness check |
-| GET | `/health/db` | DB connectivity check |
+| GET | `/` | Static API landing page |
+| GET | `/info`, `/welcome` | JSON service info |
+| GET | `/health` | Liveness |
+| GET | `/health/db` | PostgreSQL connectivity |
 
-### Auth (`AuthController`)
-
-| Method | Path | Description |
-| --- | --- | --- |
-| POST | `/auth/register` | Register a student or tutor |
-| POST | `/auth/login` | Returns `{ token, user }` |
-| GET  | `/auth/me` | Current authenticated user |
-| POST | `/auth/forgot-password` | Email a reset link |
-| POST | `/auth/reset-password` | Consume a reset token |
-
-### Users / Tutors
+### Auth
 
 | Method | Path | Description |
 | --- | --- | --- |
-| GET  | `/users/profile` | Current user profile |
-| PUT  | `/users/profile` | Update profile |
-| PUT  | `/users/online-status` | Update online flag |
-| GET  | `/users/{id}` | User by ID |
-| GET  | `/tutors/**` | Tutor discovery (online, top-rated, by subject) |
+| POST | `/auth/register` | Register student or tutor |
+| POST | `/auth/login` | `{ token, user }` |
+| GET | `/auth/me` | Current user |
+| POST | `/auth/forgot-password` | Email reset link |
+| POST | `/auth/reset-password` | Complete reset |
 
-### Doubts
+### Core resources
 
-| Method | Path | Description |
-| --- | --- | --- |
-| POST | `/api/doubts` | Create a doubt |
-| GET  | `/api/doubts/my-doubts` | Student's own doubts |
-| GET  | `/api/doubts/available` | Open doubts for tutors |
-| GET  | `/api/doubts/preferred` | Doubts where the tutor is preferred |
-| GET  | `/api/doubts/{id}` | Get one doubt |
-| PUT  | `/api/doubts/{id}/status` | Change status |
+| Area | Base path |
+| --- | --- |
+| Users / profile | `/users/*` |
+| Tutors | `/tutors/*` |
+| Doubts | `/api/doubts/*` |
+| Sessions | `/sessions/*` |
+| Plans | `/plans` |
+| Subscriptions | `/subscriptions/*` |
+| Payments | `/payment/*` |
+| Q&A | `/api/questions/*` |
+| Uploads | `/upload/*` |
+| Dashboard | `/dashboard/*` |
+| Feedback | `/feedback/*` |
 
-### Sessions
+### WebSockets
 
-| Method | Path | Description |
-| --- | --- | --- |
-| POST | `/sessions` | Create a session |
-| GET  | `/sessions/my-sessions` | User's sessions |
-| GET  | `/sessions/{id}` | Get session |
-| PUT  | `/sessions/{id}/end` | End and bill |
-| PUT  | `/sessions/{id}/notes` | Update notes |
-| PUT  | `/sessions/{id}/canvas` | Persist canvas snapshot |
-
-### Plans, Subscriptions, Payments
-
-| Method | Path | Description |
-| --- | --- | --- |
-| GET  | `/plans` | List active plans (public) |
-| POST | `/subscriptions/checkout` | Create a Razorpay order (returns key, orderId, amount, etc.) |
-| POST | `/payment/verify` | Verify Razorpay signature and activate subscription |
-| GET  | `/subscriptions/my-subscription` | Current active subscription |
-| GET  | `/subscriptions/history` | Subscription history |
-| GET  | `/subscriptions/session-status` | Remaining sessions on current plan |
-| GET  | `/subscriptions/can-create-session` | Boolean: can the student start a new session |
-| POST | `/subscriptions/cancel/{id}` | Cancel a subscription |
-
-### Feedback / Dashboard / Uploads / Q&A
-
-| Method | Path | Description |
-| --- | --- | --- |
-| POST | `/feedback` | Submit feedback for a session |
-| GET  | `/feedback/**` | Tutor / own feedback queries |
-| GET  | `/dashboard/**` | Aggregated stats for tutor + student dashboards |
-| POST | `/upload/**` | Cloudinary-backed file uploads |
-| `/api/questions/**` | Public Q&A board |
-
-### WebSocket endpoints
+Plain text WebSockets (not STOMP / Socket.IO):
 
 | Path | Handler | Purpose |
 | --- | --- | --- |
-| `/ws/webrtc?userId=...&sessionId=...` | `WebRTCSignalingHandler` | WebRTC offer/answer/ICE + presence |
-| `/ws/session?userId=...&sessionId=...` | `TutoringSessionHandler` | Whiteboard, drawing events, screen share |
+| `/ws/webrtc?userId=…&sessionId=…` | `WebRTCSignalingHandler` | WebRTC signalling, chat, presence |
+| `/ws/session?userId=…&sessionId=…` | `TutoringSessionHandler` | Whiteboard, drawing, screen share |
 
-No STOMP, no SockJS, no Socket.IO — both endpoints are plain text WebSockets.
+Production example: `wss://nerdsoncall-api.shivam.app/ws/webrtc?...`
+
+## Database
+
+JPA entities under `com.nerdsoncall.entity` — users, doubts, sessions, subscriptions, feedback, payouts, tutor status, common_questions.
+
+- Subscription **plans** are defined in code (`SubscriptionPlanCatalog`), not a `plans` table.
+- `ddl-auto: update` in production profile; SQL migrations in `src/main/resources/db/migration/` for manual column changes.
 
 ## Source layout
 
 ```
-src/main/java/com/nerdsoncall
-├── NerdsOnCallApplication.java   # entry point, @EnableAsync + @EnableScheduling
-├── config/                       # Security, WebSocket, Cloudinary, DataSource
-├── controller/                   # REST controllers
-├── dto/                          # Request / response payloads
-├── entity/                       # JPA entities
-├── repository/                   # Spring Data repositories
-├── scheduler/                    # @Scheduled jobs (payouts)
-├── security/                     # JWT filter, entry point, util
-├── service/                      # Business logic
-└── websocket/                    # WebRTC + tutoring session handlers
+src/main/java/com/nerdsoncall/
+├── NerdsOnCallApplication.java
+├── config/          # Security, WebSocket, Cloudinary
+├── controller/
+├── dto/
+├── entity/
+├── repository/
+├── scheduler/
+├── security/
+├── service/
+└── websocket/
 ```
 
 ## Scheduled jobs
 
-- `SubscriptionSchedulerService.resetDailySessionUsage` — daily at 00:00
-- `SubscriptionSchedulerService.processExpiredSubscriptions` — hourly
-- `SubscriptionSchedulerService.cleanupOldExpiredSubscriptions` — daily at 02:00
-- `SubscriptionSchedulerService.logSubscriptionStatistics` — daily at 01:00
-- `PayoutScheduler.processMonthlyPayouts` — daily at 02:59 (stubbed payouts)
+- Daily session usage reset
+- Expired subscription processing
+- Subscription cleanup / stats
+- Monthly payout job (Razorpay payout integration partially stubbed)
 
 ## Known limitations
 
-- `RazorpayPayoutService` is a stub. Real Razorpay payout calls are commented
-  out; `PayoutService.executePendingPayouts` uses dummy transaction IDs.
-- Email and PDF templates are minimal; iText is used for receipts only.
-- WebRTC uses public STUN only; production deployments will need a TURN
-  server for users behind symmetric NATs.
+- `RazorpayPayoutService` — real payout API calls are stubbed in places
+- WebRTC uses public STUN only; strict NATs may need a TURN server later

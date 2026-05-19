@@ -33,20 +33,20 @@ public class HealthController {
         try (Connection connection = dataSource.getConnection()) {
             if (connection.isValid(5)) {
                 dbHealth.put("status", "UP");
-                dbHealth.put("database", "PostgreSQL (Supabase)");
+                dbHealth.put("database", "PostgreSQL");
                 dbHealth.put("connection", "HEALTHY");
                 dbHealth.put("timestamp", System.currentTimeMillis());
                 return ResponseEntity.ok(dbHealth);
             } else {
                 dbHealth.put("status", "DOWN");
-                dbHealth.put("database", "PostgreSQL (Supabase)");
+                dbHealth.put("database", "PostgreSQL");
                 dbHealth.put("connection", "INVALID");
                 dbHealth.put("timestamp", System.currentTimeMillis());
                 return ResponseEntity.status(503).body(dbHealth);
             }
         } catch (Exception e) {
             dbHealth.put("status", "DOWN");
-            dbHealth.put("database", "PostgreSQL (Supabase)");
+            dbHealth.put("database", "PostgreSQL");
             dbHealth.put("connection", "FAILED");
             dbHealth.put("error", e.getMessage());
             dbHealth.put("timestamp", System.currentTimeMillis());
