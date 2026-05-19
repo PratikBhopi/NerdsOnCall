@@ -20,6 +20,7 @@ import {
     Calendar,
     User,
     BookOpen,
+    Check,
 } from "lucide-react"
 import Link from "next/link"
 
@@ -135,10 +136,10 @@ export default function MyStudentsPage() {
     }
 
     return (
-        <div className="min-h-screen bg-purple-100">
+        <div className="min-h-screen bg-yellow-100">
             <Navbar />
             <div className="pt-20 pb-10">
-                <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+                <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
                     {/* Header */}
                     <div className="mb-8">
                         <div className="flex items-center mb-4">
@@ -375,8 +376,9 @@ export default function MyStudentsPage() {
                                                             </Button>
                                                         </Link>
                                                     ) : (
-                                                        <Badge className="bg-green-50 text-black border-2 border-black font-black uppercase tracking-wide">
-                                                            ✓ Solved
+                                                        <Badge className="bg-green-50 text-black border-2 border-black font-black uppercase tracking-wide inline-flex items-center gap-1">
+                                                            <Check className="h-3 w-3" />
+                                                            Solved
                                                         </Badge>
                                                     )}
                                                 </div>

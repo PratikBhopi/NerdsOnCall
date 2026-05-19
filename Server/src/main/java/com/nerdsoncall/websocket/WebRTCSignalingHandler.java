@@ -308,7 +308,7 @@ public class WebRTCSignalingHandler extends TextWebSocketHandler {
             String timestamp = message.has("timestamp") ? message.get("timestamp").asText() : "";
             String messageId = message.has("id") ? message.get("id").asText() : String.valueOf(System.currentTimeMillis());
             
-            logger.info("💬 Chat message from user {} in session {}: {}", userId, sessionId, chatMessage);
+            logger.info("Chat message from user {} in session {}: {}", userId, sessionId, chatMessage);
             
             // Broadcast the chat message to all participants in the session
             Map<String, WebSocketSession> participants = tutoringSessionParticipants.get(sessionId);
@@ -345,7 +345,7 @@ public class WebRTCSignalingHandler extends TextWebSocketHandler {
             String userId = message.get("userId").asText();
             String userName = message.has("userName") ? message.get("userName").asText() : "Unknown User";
             
-            logger.debug("⌨️ User {} typing in session {}", userId, sessionId);
+            logger.debug("⌨User {} typing in session {}", userId, sessionId);
             
             // Broadcast typing indicator to all participants in the session
             Map<String, WebSocketSession> participants = tutoringSessionParticipants.get(sessionId);
@@ -378,7 +378,7 @@ public class WebRTCSignalingHandler extends TextWebSocketHandler {
             String sessionId = message.get("sessionId").asText();
             String userId = message.get("userId").asText();
             
-            logger.info("👋 User {} disconnecting from session {}", userId, sessionId);
+            logger.info("User {} disconnecting from session {}", userId, sessionId);
             
             // Remove user from session participants
             Map<String, WebSocketSession> participants = tutoringSessionParticipants.get(sessionId);
@@ -406,19 +406,19 @@ public class WebRTCSignalingHandler extends TextWebSocketHandler {
             String sessionId = message.get("sessionId").asText();
             String declinerName = message.has("declinerName") ? message.get("declinerName").asText() : "Teacher";
 
-            logger.info("📞❌ Call declined by {} (ID: {}) for session {}", declinerName, fromUserId, sessionId);
+            logger.info("Call declined by {} (ID: {}) for session {}", declinerName, fromUserId, sessionId);
 
             // Forward the decline message to the caller using direct user sessions
             WebSocketSession targetSession = userSessions.get(toUserId);
             if (targetSession != null && targetSession.isOpen()) {
                 try {
                     targetSession.sendMessage(new TextMessage(message.toString()));
-                    logger.info("✅ Call decline message forwarded to user {} via direct session", toUserId);
+                    logger.info("Call decline message forwarded to user {} via direct session", toUserId);
                 } catch (IOException e) {
-                    logger.error("❌ Failed to forward call decline message to user {}: {}", toUserId, e.getMessage());
+                    logger.error("Failed to forward call decline message to user {}: {}", toUserId, e.getMessage());
                 }
             } else {
-                logger.warn("⚠️ Target user {} not found in active sessions or session is closed", toUserId);
+                logger.warn("Target user {} not found in active sessions or session is closed", toUserId);
 
                 // Try fallback with tutoring session participants
                 Map<String, WebSocketSession> participants = tutoringSessionParticipants.get(sessionId);
@@ -427,9 +427,9 @@ public class WebRTCSignalingHandler extends TextWebSocketHandler {
                     if (fallbackSession != null && fallbackSession.isOpen()) {
                         try {
                             fallbackSession.sendMessage(new TextMessage(message.toString()));
-                            logger.info("✅ Call decline message forwarded to user {} via fallback method", toUserId);
+                            logger.info("Call decline message forwarded to user {} via fallback method", toUserId);
                         } catch (IOException e) {
-                            logger.error("❌ Fallback method also failed for user {}: {}", toUserId, e.getMessage());
+                            logger.error("Fallback method also failed for user {}: {}", toUserId, e.getMessage());
                         }
                     }
                 }
@@ -440,7 +440,7 @@ public class WebRTCSignalingHandler extends TextWebSocketHandler {
             if (participants != null) {
                 participants.clear();
                 tutoringSessionParticipants.remove(sessionId);
-                logger.info("🧹 Session {} cleaned up after call decline", sessionId);
+                logger.info("Session {} cleaned up after call decline", sessionId);
             }
         } else {
             sendErrorMessage(session, "Invalid call declined message format");

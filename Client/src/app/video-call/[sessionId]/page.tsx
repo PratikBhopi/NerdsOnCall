@@ -246,7 +246,7 @@ export default function VideoCallPage() {
         const role = urlParams.get("role")
         const waitingParam = urlParams.get("waitingForTutor")
 
-        console.log("🔍 Video call page initialization:")
+        console.log("Video call page initialization:")
         console.log(
             "- Auth user:",
             user?.firstName,
@@ -281,7 +281,7 @@ export default function VideoCallPage() {
 
             // For tutors: Focus on student video (remote-video shows student)
             console.log(
-                "🎯 Setting default focus for TUTOR: focusing on student video"
+                "Setting default focus for TUTOR: focusing on student video"
             )
         } else {
             if (tutorNameParam) {
@@ -293,7 +293,7 @@ export default function VideoCallPage() {
 
             // For students: Focus on teacher video (remote-video shows teacher)
             console.log(
-                "🎯 Setting default focus for STUDENT: focusing on teacher video"
+                "Setting default focus for STUDENT: focusing on teacher video"
             )
         }
 
@@ -329,22 +329,22 @@ export default function VideoCallPage() {
                     const executeTimeoutCleanup = async () => {
                         try {
                             console.log(
-                                "🚫 Cancelling session due to timeout..."
+                                "Cancelling session due to timeout..."
                             )
                             await api.put(
                                 `/api/sessions/call/${sessionId}/cancel?reason=Call timeout - no response`
                             )
-                            console.log("✅ Session cancelled due to timeout")
+                            console.log("Session cancelled due to timeout")
                         } catch (error) {
                             console.error(
-                                "❌ Failed to cancel session on timeout:",
+                                "Failed to cancel session on timeout:",
                                 error
                             )
                         }
 
                         // Clean up and redirect
                         cleanupConnection()
-                        console.log("🔙 Redirecting back due to timeout...")
+                        console.log("Redirecting back due to timeout...")
                         router.back()
                     }
 
@@ -407,25 +407,25 @@ export default function VideoCallPage() {
             const videoTrack = localStreamRef.current.getVideoTracks()[0]
             const audioTrack = localStreamRef.current.getAudioTracks()[0]
 
-            console.log("🔍 Current track states:")
+            console.log("Current track states:")
             console.log(
-                `📹 Video enabled: ${videoTrack?.enabled}, State: ${isVideoEnabled}`
+                `Video enabled: ${videoTrack?.enabled}, State: ${isVideoEnabled}`
             )
             console.log(
-                `🎤 Audio enabled: ${audioTrack?.enabled}, State: ${isAudioEnabled}`
+                `Audio enabled: ${audioTrack?.enabled}, State: ${isAudioEnabled}`
             )
 
             // Ensure tracks match our state
             if (videoTrack && videoTrack.enabled !== isVideoEnabled) {
                 console.log(
-                    `🔧 Fixing video track: setting to ${isVideoEnabled}`
+                    `Fixing video track: setting to ${isVideoEnabled}`
                 )
                 videoTrack.enabled = isVideoEnabled
             }
 
             if (audioTrack && audioTrack.enabled !== isAudioEnabled) {
                 console.log(
-                    `🔧 Fixing audio track: setting to ${isAudioEnabled}`
+                    `Fixing audio track: setting to ${isAudioEnabled}`
                 )
                 audioTrack.enabled = isAudioEnabled
             }
@@ -470,12 +470,12 @@ export default function VideoCallPage() {
 
             if (videoTrack) {
                 videoTrack.enabled = isVideoEnabled // Should be true by default
-                console.log(`📹 Video track enabled: ${videoTrack.enabled}`)
+                console.log(`Video track enabled: ${videoTrack.enabled}`)
             }
 
             if (audioTrack) {
                 audioTrack.enabled = isAudioEnabled // Should be true by default
-                console.log(`🎤 Audio track enabled: ${audioTrack.enabled}`)
+                console.log(`Audio track enabled: ${audioTrack.enabled}`)
             }
 
             if (localVideoRef.current) {
@@ -549,7 +549,7 @@ export default function VideoCallPage() {
                             !isEndingSessionRef.current
                         ) {
                             console.log(
-                                "🔄 Attempting to reconnect WebSocket..."
+                                "Attempting to reconnect WebSocket..."
                             )
                             connectToSignalingServer()
                         }
@@ -568,12 +568,12 @@ export default function VideoCallPage() {
     }
 
     const cleanupConnection = () => {
-        console.log("🧹 Starting cleanup - stopping all media streams...")
+        console.log("Starting cleanup - stopping all media streams...")
 
         // Stop all local stream tracks immediately
         if (localStreamRef.current) {
             localStreamRef.current.getTracks().forEach((track) => {
-                console.log(`🛑 Stopping ${track.kind} track`)
+                console.log(`Stopping ${track.kind} track`)
                 track.stop()
             })
             localStreamRef.current = null
@@ -582,7 +582,7 @@ export default function VideoCallPage() {
         // Stop all screen stream tracks immediately
         if (screenStreamRef.current) {
             screenStreamRef.current.getTracks().forEach((track) => {
-                console.log(`🛑 Stopping screen ${track.kind} track`)
+                console.log(`Stopping screen ${track.kind} track`)
                 track.stop()
             })
             screenStreamRef.current = null
@@ -631,14 +631,14 @@ export default function VideoCallPage() {
             document.title = "NerdsOnCall - Call Ended"
         }
 
-        console.log("✅ Cleanup completed - all media streams stopped")
+        console.log("Cleanup completed - all media streams stopped")
     }
 
     const handleWebSocketMessage = async (event: MessageEvent) => {
         try {
             const message = JSON.parse(event.data)
             console.log(
-                "📨 Received WebSocket message:",
+                "Received WebSocket message:",
                 message.type,
                 "Full message:",
                 message
@@ -665,7 +665,7 @@ export default function VideoCallPage() {
                                 `/api/sessions/call/${sessionId}/start`
                             )
                             console.log(
-                                "✅ Session started successfully after tutor acceptance"
+                                "Session started successfully after tutor acceptance"
                             )
                         } catch (error: any) {
                             console.warn(
@@ -682,7 +682,7 @@ export default function VideoCallPage() {
                     break
                 case "call_declined":
                     console.log(
-                        "📞❌ Call declined by teacher - Full message:",
+                        "Call declined by teacher - Full message:",
                         message
                     )
 
@@ -696,20 +696,20 @@ export default function VideoCallPage() {
                     // Execute cleanup and redirect with guaranteed execution
                     const executeCallDeclineCleanup = async () => {
                         console.log(
-                            "🚨 EXECUTING CALL DECLINE CLEANUP - GUARANTEED"
+                            "EXECUTING CALL DECLINE CLEANUP - GUARANTEED"
                         )
 
                         try {
                             // Cancel the session in backend to prevent billing
                             console.log(
-                                "🚫 Cancelling session due to call decline..."
+                                "Cancelling session due to call decline..."
                             )
                             await api.put(
                                 `/api/sessions/call/${sessionId}/cancel?reason=Call declined by teacher`
                             )
-                            console.log("✅ Session cancelled successfully")
+                            console.log("Session cancelled successfully")
                         } catch (error) {
-                            console.error("❌ Failed to cancel session:", error)
+                            console.error("Failed to cancel session:", error)
                             // Continue with cleanup even if cancel fails
                         }
 
@@ -736,14 +736,14 @@ export default function VideoCallPage() {
                             }
                         } catch (cleanupError) {
                             console.error(
-                                "❌ Cleanup error (continuing anyway):",
+                                "Cleanup error (continuing anyway):",
                                 cleanupError
                             )
                         }
 
                         // GUARANTEED REDIRECT - Multiple fallback methods
                         console.log(
-                            "🔙 REDIRECTING BACK DUE TO CALL DECLINE - GUARANTEED"
+                            "REDIRECTING BACK DUE TO CALL DECLINE - GUARANTEED"
                         )
 
                         // Add a small delay to ensure toast is shown before redirect
@@ -753,7 +753,7 @@ export default function VideoCallPage() {
                                 router.back()
                             } catch (routerError) {
                                 console.error(
-                                    "❌ router.back() failed, trying router.push:",
+                                    "router.back() failed, trying router.push:",
                                     routerError
                                 )
                                 try {
@@ -761,7 +761,7 @@ export default function VideoCallPage() {
                                     router.push("/browse-tutors")
                                 } catch (pushError) {
                                     console.error(
-                                        "❌ router.push failed, trying window.history:",
+                                        "router.push failed, trying window.history:",
                                         pushError
                                     )
                                     try {
@@ -769,7 +769,7 @@ export default function VideoCallPage() {
                                         window.history.back()
                                     } catch (historyError) {
                                         console.error(
-                                            "❌ window.history.back() failed, using window.location:",
+                                            "window.history.back() failed, using window.location:",
                                             historyError
                                         )
                                         // Method 4: Direct navigation
@@ -800,7 +800,7 @@ export default function VideoCallPage() {
                     handleOtherUserEndCall()
                     break
                 case "chat_message":
-                    console.log("💬 Received chat message:", message.message)
+                    console.log("Received chat message:", message.message)
                     const chatMessage = {
                         id: message.id || Date.now().toString(),
                         userId: parseInt(message.userId) || message.userId,
@@ -812,12 +812,12 @@ export default function VideoCallPage() {
                     setChatMessages((prev) => [...prev, chatMessage])
                     break
                 case "user_typing":
-                    console.log("⌨️ User typing:", message.userName)
+                    console.log("⌨User typing:", message.userName)
                     // Typing indicators are handled by the ChatPanel component
                     break
                 case "user-joined":
                     console.log(
-                        "👋 User joined the session:",
+                        "User joined the session:",
                         message.userName || message.from
                     )
                     // Handle user joined event if needed
@@ -832,7 +832,7 @@ export default function VideoCallPage() {
 
     const sendChatMessage = (messageText: string) => {
         if (!socketRef.current || !user) {
-            console.log("❌ Cannot send chat message: no socket or user")
+            console.log("Cannot send chat message: no socket or user")
             return
         }
 
@@ -846,7 +846,7 @@ export default function VideoCallPage() {
             id: Date.now().toString(),
         }
 
-        console.log("📤 Sending chat message from main component:", message)
+        console.log("Sending chat message from main component:", message)
         socketRef.current.send(JSON.stringify(message))
     }
 
@@ -858,7 +858,7 @@ export default function VideoCallPage() {
         }
 
         setFocusMode(mode)
-        console.log(`🎯 Entering ${mode} focus mode`)
+        console.log(`Entering ${mode} focus mode`)
 
         // Create focus layouts with dynamic height calculation
         const focusedHeight = calculateFocusedHeight()
@@ -1263,16 +1263,16 @@ export default function VideoCallPage() {
 
         // Apply the new layouts
         setLayouts(focusLayouts)
-        console.log(`✅ Applied ${mode} focus layout`)
+        console.log(`Applied ${mode} focus layout`)
     }
 
     const exitFocusMode = () => {
-        console.log("🔄 Exiting focus mode")
+        console.log("Exiting focus mode")
         setFocusMode("none")
         if (originalLayouts) {
             setLayouts(originalLayouts)
             setOriginalLayouts(null)
-            console.log("✅ Restored original layout")
+            console.log("Restored original layout")
         }
     }
 
@@ -1318,7 +1318,7 @@ export default function VideoCallPage() {
                     try {
                         isSessionStartedRef.current = true
                         await api.put(`/api/sessions/call/${sessionId}/start`)
-                        console.log("✅ Session started when call connected")
+                        console.log("Session started when call connected")
                     } catch (error: any) {
                         console.warn(
                             "Session start failed when call connected:",
@@ -1356,7 +1356,7 @@ export default function VideoCallPage() {
                                 "failed"
                         ) {
                             console.log(
-                                "⚠️ WebRTC connection permanently failed, ending call..."
+                                "WebRTC connection permanently failed, ending call..."
                             )
                             handleOtherUserEndCall()
                         }
@@ -1386,12 +1386,12 @@ export default function VideoCallPage() {
                             if (track.kind === "video") {
                                 track.enabled = isVideoEnabled
                                 console.log(
-                                    `📹 Video track enabled for offer: ${track.enabled}`
+                                    `Video track enabled for offer: ${track.enabled}`
                                 )
                             } else if (track.kind === "audio") {
                                 track.enabled = isAudioEnabled
                                 console.log(
-                                    `🎤 Audio track enabled for offer: ${track.enabled}`
+                                    `Audio track enabled for offer: ${track.enabled}`
                                 )
                             }
 
@@ -1577,7 +1577,7 @@ export default function VideoCallPage() {
 
                 if (!parameterToPass || parameterToPass === 0) {
                     console.warn(
-                        "⚠️ No valid other user ID found, skipping session creation"
+                        "No valid other user ID found, skipping session creation"
                     )
                     return
                 }
@@ -1585,7 +1585,7 @@ export default function VideoCallPage() {
                 const response = await api.post(
                     `/api/sessions/call?tutorId=${parameterToPass}&sessionId=${sessionId}`
                 )
-                console.log("✅ Session created successfully:", response.data)
+                console.log("Session created successfully:", response.data)
             } catch (error: any) {
                 console.warn(
                     "Session creation failed, continuing with call:",
@@ -1605,12 +1605,12 @@ export default function VideoCallPage() {
                         if (track.kind === "video") {
                             track.enabled = isVideoEnabled
                             console.log(
-                                `📹 Video track enabled for call: ${track.enabled}`
+                                `Video track enabled for call: ${track.enabled}`
                             )
                         } else if (track.kind === "audio") {
                             track.enabled = isAudioEnabled
                             console.log(
-                                `🎤 Audio track enabled for call: ${track.enabled}`
+                                `Audio track enabled for call: ${track.enabled}`
                             )
                         }
 
@@ -1691,7 +1691,7 @@ export default function VideoCallPage() {
                 const response = await api.put(
                     `/api/sessions/call/${sessionId}/end`
                 )
-                console.log("✅ Session ended successfully:", response.data)
+                console.log("Session ended successfully:", response.data)
 
                 if (
                     response.data.durationMinutes &&
@@ -1788,7 +1788,7 @@ export default function VideoCallPage() {
                     `/api/sessions/call/${sessionId}/end`
                 )
                 console.log(
-                    "✅ Session ended successfully (other user initiated):",
+                    "Session ended successfully (other user initiated):",
                     response.data
                 )
 
@@ -1856,7 +1856,7 @@ export default function VideoCallPage() {
     }, [incomingCall, user])
 
     const handleDeclineCall = useCallback(async () => {
-        console.log("🚫 Declining call from:", incomingCall?.callerName)
+        console.log("Declining call from:", incomingCall?.callerName)
         setShowIncomingCallModal(false)
 
         if (socketRef.current && incomingCall) {
@@ -1868,20 +1868,20 @@ export default function VideoCallPage() {
                 declinerName: `${user?.firstName} ${user?.lastName}`,
             }
 
-            console.log("📤 Sending call decline message:", declineMessage)
+            console.log("Sending call decline message:", declineMessage)
             socketRef.current.send(JSON.stringify(declineMessage))
 
             // Also cancel the session in backend
             try {
                 console.log(
-                    "🚫 Cancelling session due to call decline by teacher..."
+                    "Cancelling session due to call decline by teacher..."
                 )
                 await api.put(
                     `/api/sessions/call/${incomingCall.sessionId}/cancel?reason=Call declined by teacher`
                 )
-                console.log("✅ Session cancelled successfully")
+                console.log("Session cancelled successfully")
             } catch (error) {
-                console.error("❌ Failed to cancel session:", error)
+                console.error("Failed to cancel session:", error)
             }
         }
 

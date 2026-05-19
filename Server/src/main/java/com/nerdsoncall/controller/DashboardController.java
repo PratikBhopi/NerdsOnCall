@@ -25,7 +25,7 @@ public class DashboardController {
     @GetMapping("/student")
     public ResponseEntity<?> getStudentDashboard(Authentication authentication) {
         try {
-            System.out.println("📊 Dashboard request from: " + authentication.getName());
+            System.out.println("Dashboard request from: " + authentication.getName());
             
             User user = userService.findByEmail(authentication.getName())
                     .orElseThrow(() -> new RuntimeException("User not found"));
@@ -37,12 +37,12 @@ public class DashboardController {
             }
 
             Map<String, Object> dashboardData = dashboardService.getStudentDashboardStats(user.getId());
-            System.out.println("✅ Dashboard data fetched successfully");
+            System.out.println("Dashboard data fetched successfully");
             
             return ResponseEntity.ok(dashboardData);
             
         } catch (Exception e) {
-            System.err.println("❌ Error fetching student dashboard: " + e.getMessage());
+            System.err.println("Error fetching student dashboard: " + e.getMessage());
             e.printStackTrace();
             return ResponseEntity.badRequest().body("Failed to fetch dashboard data: " + e.getMessage());
         }
@@ -52,7 +52,7 @@ public class DashboardController {
     @GetMapping("/tutor")
     public ResponseEntity<?> getTutorDashboard(Authentication authentication) {
         try {
-            System.out.println("📊 Tutor dashboard request from: " + authentication.getName());
+            System.out.println("Tutor dashboard request from: " + authentication.getName());
 
             User user = userService.findByEmail(authentication.getName())
                     .orElseThrow(() -> new RuntimeException("User not found"));
@@ -64,12 +64,12 @@ public class DashboardController {
             }
 
             Map<String, Object> dashboardData = dashboardService.getTutorDashboardStats(user.getId());
-            System.out.println("✅ Tutor dashboard data fetched successfully");
+            System.out.println("Tutor dashboard data fetched successfully");
 
             return ResponseEntity.ok(dashboardData);
 
         } catch (Exception e) {
-            System.err.println("❌ Error fetching tutor dashboard: " + e.getMessage());
+            System.err.println("Error fetching tutor dashboard: " + e.getMessage());
             e.printStackTrace();
             return ResponseEntity.badRequest().body("Failed to fetch tutor dashboard data: " + e.getMessage());
         }
@@ -79,15 +79,15 @@ public class DashboardController {
     @GetMapping("/stats/{userId}")
     public ResponseEntity<?> getDashboardStats(@PathVariable Long userId) {
         try {
-            System.out.println("📊 Dashboard stats request for user ID: " + userId);
+            System.out.println("Dashboard stats request for user ID: " + userId);
             
             Map<String, Object> dashboardData = dashboardService.getStudentDashboardStats(userId);
-            System.out.println("✅ Dashboard stats fetched successfully");
+            System.out.println("Dashboard stats fetched successfully");
             
             return ResponseEntity.ok(dashboardData);
             
         } catch (Exception e) {
-            System.err.println("❌ Error fetching dashboard stats: " + e.getMessage());
+            System.err.println("Error fetching dashboard stats: " + e.getMessage());
             e.printStackTrace();
             return ResponseEntity.badRequest().body("Failed to fetch dashboard stats: " + e.getMessage());
         }

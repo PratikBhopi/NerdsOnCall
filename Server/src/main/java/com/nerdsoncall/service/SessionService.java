@@ -146,7 +146,7 @@ public class SessionService {
             session.setCommission(0.0);
             session.setDurationMinutes(0L);
 
-            System.out.println("💾 Saving session to database...");
+            System.out.println("Saving session to database...");
             System.out.println("Session details: Student=" + student.getId() + ", Tutor=" + tutor.getId() + ", Doubt=null, SessionId=" + callSessionId);
 
             Session savedSession = sessionRepository.save(session);
@@ -167,18 +167,18 @@ public class SessionService {
     // Start call session by sessionId - only when both parties are connected
     public Session startCallSession(String sessionId) {
         try {
-            System.out.println("🚀 Starting call session with ID: " + sessionId);
+            System.out.println("Starting call session with ID: " + sessionId);
 
             Session session = sessionRepository.findBySessionId(sessionId)
                     .orElseThrow(() -> new RuntimeException("Session not found with ID: " + sessionId));
 
             if (session.getStatus() == Session.Status.ACTIVE) {
-                System.out.println("✅ Session is already active: " + sessionId);
+                System.out.println("Session is already active: " + sessionId);
                 return session;
             }
 
             if (session.getStatus() == Session.Status.CANCELLED) {
-                System.out.println("❌ Cannot start cancelled session: " + sessionId);
+                System.out.println("Cannot start cancelled session: " + sessionId);
                 throw new RuntimeException("Cannot start cancelled session");
             }
 
@@ -189,18 +189,18 @@ public class SessionService {
             // Increment session usage for student only when call actually starts
             try {
                 subscriptionService.incrementSessionUsage(session.getStudent());
-                System.out.println("📊 Session usage incremented for student: " + session.getStudent().getEmail());
+                System.out.println("Session usage incremented for student: " + session.getStudent().getEmail());
             } catch (Exception e) {
-                System.err.println("⚠️ Failed to increment session usage: " + e.getMessage());
+                System.err.println("Failed to increment session usage: " + e.getMessage());
                 // Don't fail the call start if usage increment fails
             }
 
             Session savedSession = sessionRepository.save(session);
-            System.out.println("✅ Call session started successfully: " + sessionId + " at " + savedSession.getActualStartTime());
+            System.out.println("Call session started successfully: " + sessionId + " at " + savedSession.getActualStartTime());
             return savedSession;
 
         } catch (Exception e) {
-            System.err.println("❌ Error starting call session: " + e.getMessage());
+            System.err.println("Error starting call session: " + e.getMessage());
             e.printStackTrace();
             throw new RuntimeException("Failed to start call session: " + e.getMessage());
         }
@@ -269,18 +269,18 @@ public class SessionService {
     // Cancel call session when declined - no billing should occur
     public Session cancelCallSession(String sessionId, String reason) {
         try {
-            System.out.println("❌ Cancelling call session with ID: " + sessionId + " - Reason: " + reason);
+            System.out.println("Cancelling call session with ID: " + sessionId + " - Reason: " + reason);
 
             Session session = sessionRepository.findBySessionId(sessionId)
                     .orElseThrow(() -> new RuntimeException("Session not found with ID: " + sessionId));
 
             if (session.getStatus() == Session.Status.COMPLETED) {
-                System.out.println("⚠️ Cannot cancel completed session: " + sessionId);
+                System.out.println("Cannot cancel completed session: " + sessionId);
                 return session;
             }
 
             if (session.getStatus() == Session.Status.ACTIVE) {
-                System.out.println("⚠️ Cannot cancel active session: " + sessionId + " - Use endCallSession instead");
+                System.out.println("Cannot cancel active session: " + sessionId + " - Use endCallSession instead");
                 throw new RuntimeException("Cannot cancel active session - use end session instead");
             }
 
@@ -302,19 +302,19 @@ public class SessionService {
             if (wasActive) {
                 try {
                     subscriptionService.decrementSessionUsage(session.getStudent());
-                    System.out.println("📊 Session usage decremented for student due to cancellation: " + session.getStudent().getEmail());
+                    System.out.println("Session usage decremented for student due to cancellation: " + session.getStudent().getEmail());
                 } catch (Exception e) {
-                    System.err.println("⚠️ Failed to decrement session usage: " + e.getMessage());
+                    System.err.println("Failed to decrement session usage: " + e.getMessage());
                     // Continue with cancellation even if decrement fails
                 }
             }
 
             Session savedSession = sessionRepository.save(session);
-            System.out.println("✅ Call session cancelled successfully: " + sessionId);
+            System.out.println("Call session cancelled successfully: " + sessionId);
             return savedSession;
 
         } catch (Exception e) {
-            System.err.println("❌ Error cancelling call session: " + e.getMessage());
+            System.err.println("Error cancelling call session: " + e.getMessage());
             e.printStackTrace();
             throw new RuntimeException("Failed to cancel call session: " + e.getMessage());
         }
@@ -347,30 +347,30 @@ public class SessionService {
     @Transactional
     public void updateDatabaseSchema() {
         try {
-            System.out.println("🔧 Starting database schema update...");
+            System.out.println("Starting database schema update...");
 
             // Make doubt_id nullable for direct call sessions
             System.out.println("Making doubt_id nullable...");
             try {
                 entityManager.createNativeQuery("ALTER TABLE sessions ALTER COLUMN doubt_id DROP NOT NULL").executeUpdate();
-                System.out.println("✅ doubt_id is now nullable");
+                System.out.println("doubt_id is now nullable");
             } catch (Exception e) {
                 // If already nullable, just log
-                System.out.println("ℹ️ doubt_id might already be nullable: " + e.getMessage());
+                System.out.println("ℹdoubt_id might already be nullable: " + e.getMessage());
             }
 
             // Add actual_start_time column if it doesn't exist
             System.out.println("Adding actual_start_time column...");
             try {
                 entityManager.createNativeQuery("ALTER TABLE sessions ADD COLUMN IF NOT EXISTS actual_start_time TIMESTAMP").executeUpdate();
-                System.out.println("✅ actual_start_time column added");
+                System.out.println("actual_start_time column added");
             } catch (Exception e) {
-                System.out.println("ℹ️ actual_start_time column might already exist: " + e.getMessage());
+                System.out.println("ℹactual_start_time column might already exist: " + e.getMessage());
             }
 
-            System.out.println("✅ Database schema update completed successfully");
+            System.out.println("Database schema update completed successfully");
         } catch (Exception e) {
-            System.err.println("❌ Error updating database schema: " + e.getMessage());
+            System.err.println("Error updating database schema: " + e.getMessage());
             e.printStackTrace();
             // Don't throw exception, allow app to continue
         }

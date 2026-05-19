@@ -8,7 +8,7 @@ import { Footer } from "@/components/layout/Footer"
 import { Button } from "@/components/ui/Button"
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import { Badge } from "@/components/ui/badge"
-import { ArrowLeft, MessageCircle, Calendar, Clock, User } from "lucide-react"
+import { ArrowLeft, MessageCircle, Calendar, Clock, User, AlertTriangle, Film, ThumbsUp } from "lucide-react"
 import Link from "next/link"
 
 interface Doubt {
@@ -88,7 +88,7 @@ export default function MyQuestionsPage() {
             case "CANCELLED":
                 return "bg-red-100 text-red-800 border-red-200"
             case "RESOLVED":
-                return "bg-purple-100 text-purple-800 border-purple-200"
+                return "bg-green-100 text-green-800 border-green-200"
             default:
                 return "bg-gray-100 text-gray-800 border-gray-200"
         }
@@ -118,10 +118,10 @@ export default function MyQuestionsPage() {
     }
 
     return (
-        <div className="min-h-screen bg-slate-50">
+        <div className="min-h-screen bg-yellow-100">
             <Navbar />
             <div className="pt-20 pb-10">
-                <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
+                <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
                     {/* Header */}
                     <div className="mb-8">
                         <div className="flex items-center mb-4">
@@ -346,17 +346,14 @@ export default function MyQuestionsPage() {
                                                                                 tag.
                                                                             </video>
                                                                             <div
-                                                                                className="w-full h-32 items-center justify-center text-white text-sm bg-gray-800"
+                                                                                className="w-full h-32 flex items-center justify-center text-white text-sm bg-gray-800 gap-2"
                                                                                 style={{
                                                                                     display:
                                                                                         "none",
                                                                                 }}
                                                                             >
-                                                                                ⚠️
-                                                                                Unable
-                                                                                to
-                                                                                load
-                                                                                video.{" "}
+                                                                                <AlertTriangle className="h-4 w-4" />
+                                                                                Unable to load video.
                                                                                 <a
                                                                                     href={
                                                                                         doubt.videoUrl
@@ -365,17 +362,13 @@ export default function MyQuestionsPage() {
                                                                                     rel="noopener noreferrer"
                                                                                     className="underline ml-1"
                                                                                 >
-                                                                                    Open
-                                                                                    in
-                                                                                    new
-                                                                                    tab
+                                                                                    Open in new tab
                                                                                 </a>
                                                                             </div>
                                                                         </div>
-                                                                        <div className="absolute top-2 left-2 bg-black/70 text-white text-xs px-2 py-1 rounded">
-                                                                            🎥
-                                                                            Solution
-                                                                            Video
+                                                                        <div className="absolute top-2 left-2 bg-black/70 text-white text-xs px-2 py-1 rounded inline-flex items-center gap-1">
+                                                                            <Film className="h-3 w-3" />
+                                                                            Solution Video
                                                                         </div>
                                                                     </div>
                                                                 </div>
@@ -602,17 +595,14 @@ export default function MyQuestionsPage() {
                                                                                 tag.
                                                                             </video>
                                                                             <div
-                                                                                className="w-full h-32 items-center justify-center text-white text-sm bg-gray-800"
+                                                                                className="w-full h-32 flex items-center justify-center text-white text-sm bg-gray-800 gap-2"
                                                                                 style={{
                                                                                     display:
                                                                                         "none",
                                                                                 }}
                                                                             >
-                                                                                ⚠️
-                                                                                Unable
-                                                                                to
-                                                                                load
-                                                                                video.{" "}
+                                                                                <AlertTriangle className="h-4 w-4" />
+                                                                                Unable to load video.
                                                                                 <a
                                                                                     href={
                                                                                         question.videoUrl
@@ -621,17 +611,13 @@ export default function MyQuestionsPage() {
                                                                                     rel="noopener noreferrer"
                                                                                     className="underline ml-1"
                                                                                 >
-                                                                                    Open
-                                                                                    in
-                                                                                    new
-                                                                                    tab
+                                                                                    Open in new tab
                                                                                 </a>
                                                                             </div>
                                                                         </div>
-                                                                        <div className="absolute top-2 left-2 bg-black/70 text-white text-xs px-2 py-1 rounded">
-                                                                            🎥
-                                                                            Solution
-                                                                            Video
+                                                                        <div className="absolute top-2 left-2 bg-black/70 text-white text-xs px-2 py-1 rounded inline-flex items-center gap-1">
+                                                                            <Film className="h-3 w-3" />
+                                                                            Solution Video
                                                                         </div>
                                                                     </div>
                                                                 </div>
@@ -660,8 +646,8 @@ export default function MyQuestionsPage() {
                                                         </div>
                                                     )}
                                                     <div className="flex items-center space-x-1">
+                                                        <ThumbsUp className="h-3 w-3" />
                                                         <span>
-                                                            👍{" "}
                                                             {
                                                                 question.likesCount
                                                             }{" "}

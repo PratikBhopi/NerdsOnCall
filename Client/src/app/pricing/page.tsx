@@ -4,9 +4,9 @@ import { Footer } from "@/components/layout/Footer"
 
 export default function PricingPage() {
     return (
-        <div className="min-h-screen bg-orange-100">
+        <div className="min-h-screen flex flex-col bg-yellow-100">
             <Navbar />
-            <main className="pt-16 sm:pt-20">
+            <main className="flex-grow">
                 <Pricing />
             </main>
             <Footer />

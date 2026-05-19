@@ -43,7 +43,7 @@ export function QuestionList({
     const [searchTerm, setSearchTerm] = useState("")
     const [statusFilter, setStatusFilter] = useState<string>("ALL")
 
-    const hasFetched = useRef(false) // ✅ guard to avoid multiple API calls
+    const hasFetched = useRef(false) // guard to avoid multiple API calls
 
     useEffect(() => {
         const fetchQuestions = async () => {
@@ -88,7 +88,7 @@ export function QuestionList({
         }
 
         fetchQuestions()
-    }, []) // ✅ Only run once on mount
+    }, []) // Only run once on mount
 
     const filteredQuestions = useMemo(() => {
         return questions.filter((question) => {
@@ -109,99 +109,90 @@ export function QuestionList({
     }, [questions, searchTerm, statusFilter])
 
     return (
-        <div className="space-y-8">
+        <div className="space-y-6">
             {/* Search and Filter Controls */}
-            <div className="bg-white border-4 border-black shadow-[8px_8px_0px_0px_black] p-6">
-                <div className="flex flex-col lg:flex-row gap-4">
-                    <div className="flex-1">
+            <div className="bg-white border-3 border-black shadow-[6px_6px_0px_0px_black] p-4 sm:p-5">
+                <div className="flex flex-col sm:flex-row gap-3">
+                    <div className="flex-1 relative">
+                        <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-black pointer-events-none" />
                         <input
                             type="text"
-                            placeholder="Search questions by title, description, or subject..."
+                            placeholder="Search questions by title or description..."
                             value={searchTerm}
                             onChange={(e) => setSearchTerm(e.target.value)}
-                            className="w-full pr-4 py-3 border-3 border-black shadow-[4px_4px_0px_0px_black] focus:translate-x-[-2px] focus:translate-y-[-2px] focus:shadow-[6px_6px_0px_0px_black] transition-all font-bold text-black placeholder:text-gray-600"
+                            className="w-full pl-10 pr-4 py-2.5 text-sm border-2 border-black shadow-[3px_3px_0px_0px_black] focus:translate-x-[-2px] focus:translate-y-[-2px] focus:shadow-[5px_5px_0px_0px_black] transition-all font-bold text-black placeholder:text-gray-500 bg-white outline-none"
                         />
                     </div>
-                    <div className="flex gap-3">
-                        <div className="relative">
-                            <Filter className="absolute left-3 top-1/2 transform -translate-y-1/2 h-5 w-5 text-black" />
-                            <select
-                                value={statusFilter}
-                                onChange={(e) =>
-                                    setStatusFilter(e.target.value)
-                                }
-                                className="pl-10 pr-8 py-3 border-3 border-black shadow-[4px_4px_0px_0px_black] focus:translate-x-[-2px] focus:translate-y-[-2px] focus:shadow-[6px_6px_0px_0px_black] transition-all appearance-none bg-white font-bold text-black"
-                            >
-                                <option value="ALL">All Questions</option>
-                                <option value="PENDING">Pending</option>
-                                <option value="RESOLVED">Resolved</option>
-                            </select>
-                        </div>
+                    <div className="relative">
+                        <Filter className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-black pointer-events-none" />
+                        <select
+                            value={statusFilter}
+                            onChange={(e) => setStatusFilter(e.target.value)}
+                            className="pl-10 pr-8 py-2.5 text-sm border-2 border-black shadow-[3px_3px_0px_0px_black] focus:translate-x-[-2px] focus:translate-y-[-2px] focus:shadow-[5px_5px_0px_0px_black] transition-all appearance-none bg-white font-bold text-black w-full sm:w-auto outline-none"
+                        >
+                            <option value="ALL">All Questions</option>
+                            <option value="PENDING">Pending</option>
+                            <option value="RESOLVED">Resolved</option>
+                        </select>
                     </div>
                 </div>
 
                 {/* Filter Stats */}
-                <div className="mt-4 flex flex-wrap items-center gap-4 text-sm text-gray-600">
-                    <div className="flex items-center gap-2">
-                        <BookOpen className="h-4 w-4" />
-                        <span>{filteredQuestions.length} questions found</span>
+                <div className="mt-4 flex flex-wrap items-center gap-2 sm:gap-3">
+                    <div className="inline-flex items-center gap-1.5 px-2.5 py-1 bg-pink-200 border-2 border-black shadow-[2px_2px_0px_0px_black] text-xs sm:text-sm font-black uppercase tracking-wide text-black">
+                        <BookOpen className="h-3.5 w-3.5" />
+                        {filteredQuestions.length} found
                     </div>
-                    <div className="flex items-center gap-2">
-                        <Clock className="h-4 w-4 text-amber-600" />
-                        <span>
-                            {
-                                filteredQuestions.filter(
-                                    (q) => q.status === "PENDING"
-                                ).length
-                            }{" "}
-                            pending
-                        </span>
+                    <div className="inline-flex items-center gap-1.5 px-2.5 py-1 bg-orange-200 border-2 border-black shadow-[2px_2px_0px_0px_black] text-xs sm:text-sm font-black uppercase tracking-wide text-black">
+                        <Clock className="h-3.5 w-3.5" />
+                        {
+                            filteredQuestions.filter((q) => q.status === "PENDING").length
+                        }{" "}
+                        pending
                     </div>
-                    <div className="flex items-center gap-2">
-                        <CheckCircle className="h-4 w-4 text-green-600" />
-                        <span>
-                            {
-                                filteredQuestions.filter(
-                                    (q) => q.status === "RESOLVED"
-                                ).length
-                            }{" "}
-                            resolved
-                        </span>
+                    <div className="inline-flex items-center gap-1.5 px-2.5 py-1 bg-green-200 border-2 border-black shadow-[2px_2px_0px_0px_black] text-xs sm:text-sm font-black uppercase tracking-wide text-black">
+                        <CheckCircle className="h-3.5 w-3.5" />
+                        {
+                            filteredQuestions.filter((q) => q.status === "RESOLVED").length
+                        }{" "}
+                        resolved
                     </div>
                 </div>
             </div>
 
             {/* Questions List */}
             {loading ? (
-                <div className="space-y-6">
-                    {[...Array(5)].map((_, i) => (
+                <div className="space-y-5">
+                    {[...Array(4)].map((_, i) => (
                         <div
                             key={i}
-                            className="bg-white rounded-xl shadow-sm border border-gray-200 p-6"
+                            className="bg-white border-3 border-black shadow-[5px_5px_0px_0px_black] p-5"
                         >
                             <div className="animate-pulse">
-                                <div className="h-6 bg-gray-200 rounded w-3/4 mb-4"></div>
-                                <div className="h-4 bg-gray-200 rounded w-1/2 mb-3"></div>
-                                <div className="h-4 bg-gray-200 rounded w-full mb-2"></div>
-                                <div className="h-4 bg-gray-200 rounded w-2/3"></div>
+                                <div className="h-5 bg-gray-200 border-2 border-black w-3/4 mb-4"></div>
+                                <div className="h-3.5 bg-gray-200 border-2 border-black w-1/2 mb-3"></div>
+                                <div className="h-3.5 bg-gray-200 border-2 border-black w-full mb-2"></div>
+                                <div className="h-3.5 bg-gray-200 border-2 border-black w-2/3"></div>
                             </div>
                         </div>
                     ))}
                 </div>
             ) : error ? (
-                <div className="bg-red-50 border border-red-200 rounded-xl p-6 text-center">
-                    <div className="text-red-600 font-medium mb-2">
+                <div className="bg-red-100 border-3 border-black shadow-[5px_5px_0px_0px_black] p-6 text-center">
+                    <div className="text-black font-black uppercase tracking-wide mb-2">
                         Error Loading Questions
                     </div>
-                    <p className="text-red-500">{error}</p>
+                    <p className="text-black font-bold">{error}</p>
                 </div>
             ) : filteredQuestions.length === 0 ? (
-                <div className="bg-gray-50 border border-gray-200 rounded-xl p-12 text-center">
-                    <BookOpen className="h-12 w-12 text-gray-400 mx-auto mb-4" />
-                    <h3 className="text-lg font-medium text-gray-900 mb-2">
+                <div className="bg-white border-3 border-black shadow-[6px_6px_0px_0px_black] p-10 sm:p-12 text-center">
+                    <div className="w-16 h-16 bg-cyan-200 border-2 border-black shadow-[3px_3px_0px_0px_black] flex items-center justify-center mx-auto mb-4">
+                        <BookOpen className="h-8 w-8 text-black" strokeWidth={2.5} />
+                    </div>
+                    <h3 className="text-lg sm:text-xl font-black text-black mb-2 uppercase tracking-wide">
                         No questions found
                     </h3>
-                    <p className="text-gray-600 mb-4">
+                    <p className="text-black font-bold mb-4">
                         {searchTerm || statusFilter !== "ALL"
                             ? "Try adjusting your search or filter criteria."
                             : "Be the first to ask a question!"}
@@ -209,14 +200,14 @@ export function QuestionList({
                     {statusFilter !== "ALL" && (
                         <button
                             onClick={() => setStatusFilter("ALL")}
-                            className="inline-flex items-center gap-2 px-4 py-2 text-blue-600 hover:text-blue-700 font-medium transition-colors"
+                            className="inline-flex items-center gap-2 px-4 py-2 bg-yellow-200 hover:bg-yellow-300 text-black border-2 border-black shadow-[3px_3px_0px_0px_black] hover:translate-x-[-2px] hover:translate-y-[-2px] hover:shadow-[5px_5px_0px_0px_black] transition-all font-black uppercase tracking-wide text-sm"
                         >
                             Clear filters
                         </button>
                     )}
                 </div>
             ) : (
-                <div className="space-y-6">
+                <div className="space-y-5">
                     {filteredQuestions.map((question) => (
                         <QuestionCard
                             key={question.id}

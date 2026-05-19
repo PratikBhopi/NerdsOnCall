@@ -53,7 +53,7 @@ public class SessionController {
             User currentUser = userService.findByEmail(authentication.getName())
                     .orElseThrow(() -> new RuntimeException("User not found"));
 
-            System.out.println("👤 Current user: " + currentUser.getFirstName() + " " + currentUser.getLastName() + " (ID: " + currentUser.getId() + ", Role: " + currentUser.getRole() + ")");
+            System.out.println("Current user: " + currentUser.getFirstName() + " " + currentUser.getLastName() + " (ID: " + currentUser.getId() + ", Role: " + currentUser.getRole() + ")");
 
             Long studentId;
             Long actualTutorId;
@@ -62,22 +62,22 @@ public class SessionController {
                 // Student is creating the session
                 studentId = currentUser.getId();
                 actualTutorId = tutorId;
-                System.out.println("👨‍🎓 Student creating session with tutor ID: " + tutorId);
+                System.out.println("Student creating session with tutor ID: " + tutorId);
             } else if (currentUser.getRole() == User.Role.TUTOR) {
                 // Tutor is creating the session - they are the tutor, tutorId param is actually studentId
                 studentId = tutorId; // The tutorId parameter is actually the student ID when tutor creates
                 actualTutorId = currentUser.getId();
-                System.out.println("👨‍🏫 Tutor creating session with student ID: " + tutorId);
+                System.out.println("Tutor creating session with student ID: " + tutorId);
             } else {
-                System.out.println("❌ Invalid user role: " + currentUser.getRole());
+                System.out.println("Invalid user role: " + currentUser.getRole());
                 return ResponseEntity.badRequest().body("Invalid user role for session creation");
             }
 
             Session session = sessionService.createCallSession(studentId, actualTutorId, sessionId);
-            System.out.println("✅ Call session created successfully with ID: " + session.getId());
+            System.out.println("Call session created successfully with ID: " + session.getId());
             return ResponseEntity.ok(session);
         } catch (Exception e) {
-            System.err.println("❌ Failed to create call session: " + e.getMessage());
+            System.err.println("Failed to create call session: " + e.getMessage());
             e.printStackTrace();
             return ResponseEntity.badRequest().body("Failed to create call session: " + e.getMessage());
         }
@@ -87,12 +87,12 @@ public class SessionController {
     @PutMapping("/call/{sessionId}/start")
     public ResponseEntity<?> startCallSession(@PathVariable String sessionId) {
         try {
-            System.out.println("🚀 Starting call session: " + sessionId);
+            System.out.println("Starting call session: " + sessionId);
             Session session = sessionService.startCallSession(sessionId);
-            System.out.println("✅ Call session started successfully: " + sessionId);
+            System.out.println("Call session started successfully: " + sessionId);
             return ResponseEntity.ok(session);
         } catch (Exception e) {
-            System.err.println("❌ Failed to start call session: " + sessionId + " - " + e.getMessage());
+            System.err.println("Failed to start call session: " + sessionId + " - " + e.getMessage());
             e.printStackTrace();
             return ResponseEntity.badRequest().body("Failed to start call session: " + e.getMessage());
         }
@@ -113,12 +113,12 @@ public class SessionController {
     @PutMapping("/call/{sessionId}/cancel")
     public ResponseEntity<?> cancelCallSession(@PathVariable String sessionId, @RequestParam(required = false) String reason) {
         try {
-            System.out.println("🚫 Cancelling call session: " + sessionId + " - Reason: " + reason);
+            System.out.println("Cancelling call session: " + sessionId + " - Reason: " + reason);
             Session session = sessionService.cancelCallSession(sessionId, reason != null ? reason : "Call declined");
-            System.out.println("✅ Call session cancelled successfully: " + sessionId);
+            System.out.println("Call session cancelled successfully: " + sessionId);
             return ResponseEntity.ok(session);
         } catch (Exception e) {
-            System.err.println("❌ Failed to cancel call session: " + sessionId + " - " + e.getMessage());
+            System.err.println("Failed to cancel call session: " + sessionId + " - " + e.getMessage());
             e.printStackTrace();
             return ResponseEntity.badRequest().body("Failed to cancel call session: " + e.getMessage());
         }

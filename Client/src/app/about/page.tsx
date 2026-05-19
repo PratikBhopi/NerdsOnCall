@@ -89,7 +89,7 @@ const features = [
 
 export default function AboutPage() {
     return (
-        <div className="min-h-screen bg-orange-100">
+        <div className="min-h-screen bg-yellow-100">
             <Navbar />
 
             {/* Hero Section */}

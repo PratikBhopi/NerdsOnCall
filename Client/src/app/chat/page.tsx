@@ -65,7 +65,7 @@ export default function ChatPage() {
     ]
 
     return (
-        <div className="min-h-screen bg-orange-100">
+        <div className="min-h-screen bg-yellow-100">
             <Navbar />
 
             {/* Main Container */}
@@ -161,7 +161,7 @@ export default function ChatPage() {
                 </div>
 
                 {/* Input Area - Clean and Minimal */}
-                <div className="sticky bottom-0 bg-orange-100 pt-4 pb-8">
+                <div className="sticky bottom-0 bg-yellow-100 pt-4 pb-8">
                     <div className="bg-white border-4 border-black shadow-[6px_6px_0px_0px_black] p-4">
                         <ChatInput
                             onSendMessage={sendMessage}

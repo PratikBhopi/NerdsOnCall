@@ -127,7 +127,7 @@ export default function DashboardPage() {
             !hasFetchedRef.current
         ) {
             console.log(
-                "🎯 Dashboard page loaded, fetching student data once..."
+                "Dashboard page loaded, fetching student data once..."
             )
             hasFetchedRef.current = true
             refetch()
@@ -138,7 +138,7 @@ export default function DashboardPage() {
             !loading &&
             !hasFetchedRef.current
         ) {
-            console.log("🎯 Dashboard page loaded, fetching tutor data once...")
+            console.log("Dashboard page loaded, fetching tutor data once...")
             hasFetchedRef.current = true
             tutorRefetch()
         }

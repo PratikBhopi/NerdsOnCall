@@ -10,6 +10,8 @@ import {
     FileText,
     User,
     BookOpen,
+    Lightbulb,
+    Clapperboard,
 } from "lucide-react"
 import { BlockLoader } from "@/components/ui/Loader"
 import { api } from "@/lib/api"
@@ -351,9 +353,7 @@ export default function SubmitSolutionPage() {
                                         disabled={isSubmitting}
                                     />
                                     <p className="text-sm text-gray-600 flex items-start gap-2">
-                                        <span className="text-green-600 mt-0.5">
-                                            💡
-                                        </span>
+                                        <Lightbulb className="h-4 w-4 text-green-600 mt-0.5 flex-shrink-0" />
                                         Provide a clear, step-by-step
                                         explanation that helps the student
                                         understand the concept.
@@ -416,9 +416,7 @@ export default function SubmitSolutionPage() {
                                         )}
                                     </div>
                                     <p className="text-sm text-gray-600 flex items-start gap-2">
-                                        <span className="text-green-600 mt-0.5">
-                                            🎥
-                                        </span>
+                                        <Clapperboard className="h-4 w-4 text-green-600 mt-0.5 flex-shrink-0" />
                                         Record yourself explaining the solution
                                         step by step. This helps students
                                         understand better.

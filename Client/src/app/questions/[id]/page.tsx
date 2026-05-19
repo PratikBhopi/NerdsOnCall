@@ -10,6 +10,7 @@ import {
     BookOpen,
     ThumbsUp,
     MessageSquare,
+    Upload,
 } from "lucide-react"
 import { BlockLoader } from "@/components/ui/Loader"
 import { formatDistanceToNow } from "date-fns"
@@ -122,7 +123,7 @@ export default function QuestionDetailPage() {
 
     if (loading) {
         return (
-            <div className="min-h-screen flex flex-col bg-orange-100">
+            <div className="min-h-screen flex flex-col bg-yellow-100">
                 <Navbar />
                 <main className="flex-grow flex items-center justify-center">
                     <div className="flex items-center gap-4 text-black">
@@ -307,9 +308,10 @@ export default function QuestionDetailPage() {
                                 {question.status === "PENDING" && (
                                     <Link
                                         href={`/questions/${question.id}/answer`}
-                                        className="inline-flex items-center gap-2 px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors"
+                                        className="inline-flex items-center gap-2 px-4 py-2 bg-cyan-300 hover:bg-cyan-400 text-black border-3 border-black shadow-[4px_4px_0px_0px_black] hover:translate-x-[-2px] hover:translate-y-[-2px] hover:shadow-[6px_6px_0px_0px_black] transition-all font-black uppercase tracking-wide"
                                     >
-                                        📤 Upload Solution
+                                        <Upload className="h-4 w-4" />
+                                        Upload Solution
                                     </Link>
                                 )}
                             </div>

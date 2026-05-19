@@ -46,13 +46,13 @@ public class DoubtService {
         // This ensures doubts count towards session limit just like video calls
         try {
             subscriptionService.incrementSessionUsage(doubt.getStudent());
-            System.out.println("📊 Session usage incremented for doubt creation by student: " + doubt.getStudent().getEmail());
+            System.out.println("Session usage incremented for doubt creation by student: " + doubt.getStudent().getEmail());
         } catch (Exception e) {
-            System.err.println("⚠️ Failed to increment session usage for doubt: " + e.getMessage());
+            System.err.println("Failed to increment session usage for doubt: " + e.getMessage());
             // Don't fail doubt creation if usage increment fails
         }
 
-        System.out.println("💡 Doubt created successfully - Session usage incremented");
+        System.out.println("Doubt created successfully - Session usage incremented");
 
         return savedDoubt;
     }

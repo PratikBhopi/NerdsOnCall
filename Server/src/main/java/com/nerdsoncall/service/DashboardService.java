@@ -36,7 +36,7 @@ public class DashboardService {
     // Get student dashboard statistics
     public Map<String, Object> getStudentDashboardStats(Long studentId) {
         try {
-            System.out.println("📊 Fetching dashboard stats for student ID: " + studentId);
+            System.out.println("Fetching dashboard stats for student ID: " + studentId);
             
             User student = userRepository.findById(studentId)
                     .orElseThrow(() -> new RuntimeException("Student not found"));
@@ -110,11 +110,11 @@ public class DashboardService {
             stats.put("recentActivities", recentActivities);
             stats.put("totalCost", calculateTotalCost(completedSessions));
             
-            System.out.println("✅ Dashboard stats calculated successfully");
+            System.out.println("Dashboard stats calculated successfully");
             return stats;
             
         } catch (Exception e) {
-            System.err.println("❌ Error fetching dashboard stats: " + e.getMessage());
+            System.err.println("Error fetching dashboard stats: " + e.getMessage());
             e.printStackTrace();
             throw new RuntimeException("Failed to fetch dashboard stats: " + e.getMessage());
         }
@@ -123,7 +123,7 @@ public class DashboardService {
     // Get tutor dashboard statistics
     public Map<String, Object> getTutorDashboardStats(Long tutorId) {
         try {
-            System.out.println("📊 Fetching dashboard stats for tutor ID: " + tutorId);
+            System.out.println("Fetching dashboard stats for tutor ID: " + tutorId);
 
             User tutor = userRepository.findById(tutorId)
                     .orElseThrow(() -> new RuntimeException("Tutor not found"));
@@ -192,11 +192,11 @@ public class DashboardService {
             stats.put("recentActivities", recentActivities);
             stats.put("monthlyGrowth", monthlyGrowth);
 
-            System.out.println("✅ Tutor dashboard stats calculated successfully");
+            System.out.println("Tutor dashboard stats calculated successfully");
             return stats;
 
         } catch (Exception e) {
-            System.err.println("❌ Error fetching tutor dashboard stats: " + e.getMessage());
+            System.err.println("Error fetching tutor dashboard stats: " + e.getMessage());
             e.printStackTrace();
             throw new RuntimeException("Failed to fetch tutor dashboard stats: " + e.getMessage());
         }
@@ -205,7 +205,7 @@ public class DashboardService {
     // Get recent activities for student
     private List<Map<String, Object>> getRecentActivities(Long studentId) {
         try {
-            System.out.println("📋 Fetching recent activities for student: " + studentId);
+            System.out.println("Fetching recent activities for student: " + studentId);
 
             // Get student object once for fallback use
             User student = userRepository.findById(studentId).orElse(null);
@@ -444,7 +444,7 @@ public class DashboardService {
     // Get recent activities for tutor
     private List<Map<String, Object>> getTutorRecentActivities(Long tutorId) {
         try {
-            System.out.println("📋 Fetching recent activities for tutor: " + tutorId);
+            System.out.println("Fetching recent activities for tutor: " + tutorId);
 
             User tutor = userRepository.findById(tutorId).orElse(null);
             if (tutor == null) return List.of();
