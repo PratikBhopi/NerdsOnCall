@@ -39,7 +39,7 @@ server:
     port: ${PORT:8080}
 
 jwt:
-    secret: ${JWT_SECRET:change_me_to_a_secure_256_bit_secret_in_production_environment_only}
+    secret: ${JWT_SECRET:aAQIuY0bbi5GAn0mQ4eC84piRP8rXODxmJM63xU0pRG}
     expiration: 86400000
 
 razorpay:
