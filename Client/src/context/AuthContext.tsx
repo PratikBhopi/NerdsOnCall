@@ -7,8 +7,14 @@ import React, {
   useState,
   ReactNode,
 } from "react";
-import { User, LoginRequest, RegisterRequest } from "../types";
+import { User, RegisterRequest } from "../types";
 import { api } from "../lib/api";
+import {
+  clearAuthStorage,
+  getStoredToken,
+  isStoredTokenUsable,
+} from "../lib/authToken";
+import { isAxiosError } from "axios";
 
 interface AuthContextType {
   user: User | null;
@@ -33,6 +39,23 @@ interface AuthProviderProps {
   children: ReactNode;
 }
 
+function isAuthSessionError(error: unknown): boolean {
+  if (!isAxiosError(error)) return false;
+  const status = error.response?.status;
+  if (status === 401 || status === 403) return true;
+  if (status === 400) {
+    const data = error.response?.data;
+    const message =
+      typeof data === "string"
+        ? data
+        : typeof data === "object" && data && "message" in data
+          ? String((data as { message: unknown }).message)
+          : "";
+    return message.toLowerCase().includes("not authenticated");
+  }
+  return false;
+}
+
 export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
   const [user, setUser] = useState<User | null>(null);
   const [loading, setLoading] = useState(true);
@@ -40,57 +63,27 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
   useEffect(() => {
     const initAuth = async () => {
       try {
-        const token = localStorage.getItem("token");
-        console.log("AuthContext: Initializing auth, token exists:", !!token);
-
-        if (token) {
-          // Check if token is expired before making API call
-          try {
-            const payload = JSON.parse(atob(token.split(".")[1]));
-            const now = Math.floor(Date.now() / 1000);
-
-            console.log("AuthContext: Token payload:", payload);
-            console.log(
-              "AuthContext: Token expires at:",
-              payload.exp,
-              "Current time:",
-              now
-            );
-
-            if (payload.exp && payload.exp < now) {
-              // Token is expired, clear it
-              console.log("AuthContext: Token is expired, clearing...");
-              localStorage.removeItem("token");
-              document.cookie =
-                "token=; path=/; expires=Thu, 01 Jan 1970 00:00:00 GMT";
-              return;
-            }
-          } catch (tokenError) {
-            // Invalid token format, clear it
-            console.log(
-              "AuthContext: Invalid token format, clearing...",
-              tokenError
-            );
-            localStorage.removeItem("token");
-            document.cookie =
-              "token=; path=/; expires=Thu, 01 Jan 1970 00:00:00 GMT";
-            return;
+        if (!isStoredTokenUsable()) {
+          if (getStoredToken()) {
+            clearAuthStorage();
           }
+          return;
+        }
 
-          console.log("AuthContext: Making API call to /auth/me");
-          const response = await api.get("/auth/me");
-          console.log("AuthContext: User data received:", response.data);
+        const response = await api.get("/auth/me");
+        if (response.data) {
           setUser(response.data);
         } else {
-          console.log("AuthContext: No token found");
+          clearAuthStorage();
         }
       } catch (error) {
+        if (isAuthSessionError(error)) {
+          clearAuthStorage();
+          return;
+        }
         console.error("Auth initialization error:", error);
-        localStorage.removeItem("token");
-        document.cookie =
-          "token=; path=/; expires=Thu, 01 Jan 1970 00:00:00 GMT";
+        clearAuthStorage();
       } finally {
-        console.log("AuthContext: Setting loading to false");
         setLoading(false);
       }
     };
@@ -99,56 +92,30 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
   }, []);
 
   const login = async (email: string, password: string) => {
-    try {
-      const response = await api.post("/auth/login", { email, password });
-      const { token, user: userData } = response.data;
+    const response = await api.post("/auth/login", { email, password });
+    const { token, user: userData } = response.data;
 
-      localStorage.setItem("token", token);
-      // Also set cookie for middleware
-      document.cookie = `token=${token}; path=/; max-age=${7 * 24 * 60 * 60}`; // 7 days
-      setUser(userData);
-    } catch (error) {
-      throw error;
-    }
+    localStorage.setItem("token", token);
+    document.cookie = `token=${token}; path=/; max-age=${7 * 24 * 60 * 60}`;
+    setUser(userData);
   };
 
   const register = async (data: RegisterRequest) => {
-    try {
-      const response = await api.post("/auth/register", data);
-      const { token, user: userData } = response.data;
+    const response = await api.post("/auth/register", data);
+    const { token, user: userData } = response.data;
 
-      localStorage.setItem("token", token);
-      // Also set cookie for middleware
-      document.cookie = `token=${token}; path=/; max-age=${7 * 24 * 60 * 60}`; // 7 days
-      setUser(userData);
-    } catch (error) {
-      throw error;
-    }
+    localStorage.setItem("token", token);
+    document.cookie = `token=${token}; path=/; max-age=${7 * 24 * 60 * 60}`;
+    setUser(userData);
   };
 
   const logout = () => {
-    localStorage.removeItem("token");
-    // Clear cookie
-    document.cookie = "token=; path=/; expires=Thu, 01 Jan 1970 00:00:00 GMT";
+    clearAuthStorage();
     setUser(null);
   };
 
-  // Check if the current token is valid (not expired)
   const isTokenValid = (): boolean => {
-    const token = localStorage.getItem("token");
-    if (!token) return false;
-
-    try {
-      // Decode JWT token to check expiration
-      const payload = JSON.parse(atob(token.split(".")[1]));
-      const currentTime = Date.now() / 1000;
-
-      // Check if token is expired (with 5 minute buffer)
-      return payload.exp > currentTime + 300;
-    } catch (error) {
-      console.error("Error validating token:", error);
-      return false;
-    }
+    return isStoredTokenUsable();
   };
 
   const value: AuthContextType = {

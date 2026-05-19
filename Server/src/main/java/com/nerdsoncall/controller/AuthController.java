@@ -138,14 +138,13 @@ public class AuthController {
     @GetMapping("/me")
     public ResponseEntity<?> getCurrentUser(Authentication authentication) {
         try {
-            if (authentication == null) {
-                return ResponseEntity.badRequest().body("Not authenticated");
-            }
-            
             User user = userService.findByEmail(authentication.getName()).orElse(null);
+            if (user == null) {
+                return ResponseEntity.status(404).body("User not found");
+            }
             return ResponseEntity.ok(user);
         } catch (Exception e) {
-            return ResponseEntity.badRequest().body("Failed to get user: " + e.getMessage());
+            return ResponseEntity.status(500).body("Failed to get user: " + e.getMessage());
         }
     }
 
