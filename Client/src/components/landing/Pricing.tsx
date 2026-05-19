@@ -4,13 +4,13 @@ import Link from "next/link";
 import { Badge } from "../ui/badge";
 import { Button } from "../ui/Button";
 import { Card, CardContent, CardHeader, CardTitle } from "../ui/card";
-import { BlockLoader } from "../ui/Loader";
 import { Check, Crown, Star, Shield } from "lucide-react";
 import { useEffect, useState } from "react";
 import { api } from "@/lib/api";
 import { Plan, Subscription } from "@/types";
 import { useAuth } from "@/context/AuthContext";
 import { formatINR } from "@/lib/currency";
+import { SUBSCRIPTION_PLANS, getPlanFeatures, isPopularPlan } from "@/lib/plans";
 import toast from "react-hot-toast";
 
 // Helper function to get duration display text
@@ -34,33 +34,16 @@ declare global {
 }
 
 const planIcons: Record<string, any> = {
-  Essential: Star,
-  Professional: Crown,
-  Enterprise: Shield,
+  "Starter Plan": Star,
+  "Pro Plan": Crown,
+  "Premium Plan": Shield,
 };
 
 export function Pricing() {
-  const [plans, setPlans] = useState<Plan[]>([]);
-  const [loading, setLoading] = useState(true);
-  const [error, setError] = useState<string | null>(null);
+  const plans = SUBSCRIPTION_PLANS;
   const [payingPlanId, setPayingPlanId] = useState<number | null>(null);
   const { user } = useAuth();
   const [subscription, setSubscription] = useState<Subscription | null>(null);
-
-  useEffect(() => {
-    const fetchPlans = async () => {
-      try {
-        setLoading(true);
-        const response = await api.get<Plan[]>("/plans");
-        setPlans(response.data);
-      } catch (err: any) {
-        setError("Failed to load plans.");
-      } finally {
-        setLoading(false);
-      }
-    };
-    fetchPlans();
-  }, []);
 
   // Fetch user's current subscription if logged in
   useEffect(() => {
@@ -86,41 +69,6 @@ export function Pricing() {
     };
     fetchSubscription();
   }, [user]);
-
-  // Optionally, you can define features for each plan name if not provided by backend
-  const featuresMap: Record<string, string[]> = {
-    Essential: [
-      "Up to 10 hours of tutoring per month",
-      "Access to certified tutors",
-      "HD video sessions",
-      "Basic whiteboard tools",
-      "Email support",
-      "Session recordings (1 week)",
-    ],
-    Professional: [
-      "Unlimited tutoring hours",
-      "Premium tutor selection",
-      "HD video + screen sharing",
-      "Advanced whiteboard tools",
-      "Priority support",
-      "Session recordings (30 days)",
-      "Progress tracking",
-      "Mobile app access",
-    ],
-    Enterprise: [
-      "Everything in Professional",
-      "Dedicated account manager",
-      "Custom integrations",
-      "Admin dashboard",
-      "Bulk user management",
-      "Custom branding",
-      "SLA guarantee",
-      "24/7 phone support",
-    ],
-  };
-
-  // Optionally, mark the most popular plan
-  const isPopular = (plan: Plan) => plan.name === "Professional";
 
   // Razorpay handler
   const handleSubscribe = async (plan: Plan) => {
@@ -198,24 +146,6 @@ export function Pricing() {
     }
   };
 
-  if (loading) {
-    return (
-      <div className="py-20 text-center">
-        <BlockLoader size="lg" className="mx-auto mb-4" />
-        <p className="text-lg text-black font-bold uppercase tracking-wide">
-          Loading plans...
-        </p>
-      </div>
-    );
-  }
-  if (error) {
-    return (
-      <div className="py-20 text-center text-black font-bold bg-red-300 border-3 border-black shadow-[4px_4px_0px_0px_black] p-4 mx-4 uppercase tracking-wide">
-        {error}
-      </div>
-    );
-  }
-
   return (
     <section className="py-12 sm:py-16 lg:py-20 px-4 sm:px-6 lg:px-8 bg-yellow-100">
       <div className="max-w-6xl mx-auto">
@@ -240,15 +170,15 @@ export function Pricing() {
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-4 sm:gap-6 lg:gap-8 max-w-6xl mx-auto mb-12 sm:mb-16 lg:mb-20">
           {plans.map((plan) => {
             const Icon = planIcons[plan.name] || Star;
-            const features = featuresMap[plan.name] || [];
+            const features = getPlanFeatures(plan);
             return (
               <Card
                 key={plan.id}
                 className={`relative bg-white border-3 border-black shadow-[6px_6px_0px_0px_black] hover:translate-x-[-2px] hover:translate-y-[-2px] hover:shadow-[8px_8px_0px_0px_black] transition-all duration-300 ${
-                  isPopular(plan) ? "scale-105 lg:scale-110" : ""
+                  isPopularPlan(plan) ? "scale-105 lg:scale-110" : ""
                 }`}
               >
-                {isPopular(plan) && (
+                {isPopularPlan(plan) && (
                   <div className="absolute -top-3 left-1/2 transform -translate-x-1/2">
                     <Badge className="bg-black text-white px-4 py-2 border-2 border-black shadow-[2px_2px_0px_0px_black] font-black uppercase tracking-wide">
                       Most Popular
@@ -263,7 +193,7 @@ export function Pricing() {
                     >
                       <Icon
                         className={`h-6 w-6 sm:h-8 sm:w-8 ${
-                          isPopular(plan) ? "text-cyan-300" : "text-white"
+                          isPopularPlan(plan) ? "text-cyan-300" : "text-white"
                         }`}
                       />
                     </div>
@@ -305,7 +235,7 @@ export function Pricing() {
                   {user && user.role === "STUDENT" ? (
                     <Button
                       className={`w-full h-10 sm:h-12 font-black transition-all duration-200 text-sm sm:text-base border-3 border-black shadow-[4px_4px_0px_0px_black] hover:translate-x-[-2px] hover:translate-y-[-2px] hover:shadow-[6px_6px_0px_0px_black] uppercase tracking-wide ${
-                        isPopular(plan)
+                        isPopularPlan(plan)
                           ? "bg-cyan-300 hover:bg-cyan-400 text-black"
                           : "bg-pink-300 hover:bg-pink-400 text-black"
                       }`}
@@ -318,11 +248,11 @@ export function Pricing() {
                     </Button>
                   ) : (
                     <Link
-                      href={`/auth/register?role=student&plan=${plan.name.toLowerCase()}`}
+                      href={`/auth/register?role=student&plan=${plan.planType.toLowerCase()}`}
                     >
                       <Button
                         className={`w-full h-10 sm:h-12 font-black transition-all duration-200 text-sm sm:text-base border-3 border-black shadow-[4px_4px_0px_0px_black] hover:translate-x-[-2px] hover:translate-y-[-2px] hover:shadow-[6px_6px_0px_0px_black] uppercase tracking-wide ${
-                          isPopular(plan)
+                          isPopularPlan(plan)
                             ? "bg-cyan-300 hover:bg-cyan-400 text-black"
                             : "bg-pink-300 hover:bg-pink-400 text-black"
                         }`}

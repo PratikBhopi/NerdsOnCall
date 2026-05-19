@@ -48,8 +48,21 @@ export function useChat(options: UseChatOptions = {}) {
                 })
 
                 if (!response.ok) {
-                    const errorData = await response.json()
-                    throw new Error(errorData.error || "Failed to get response")
+                    const errorData = await response.json().catch(() => ({}))
+                    const serverError = errorData.error || "Failed to get response"
+
+                    if ([401, 403, 429, 503].includes(response.status)) {
+                        const assistantMessage: ChatMessage = {
+                            id: (Date.now() + 1).toString(),
+                            role: "assistant",
+                            content: serverError,
+                            timestamp: new Date(),
+                        }
+                        setMessages((prev) => [...prev, assistantMessage])
+                        return assistantMessage
+                    }
+
+                    throw new Error(serverError)
                 }
 
                 const data = await response.json()
@@ -64,7 +77,7 @@ export function useChat(options: UseChatOptions = {}) {
                 setMessages((prev) => [...prev, assistantMessage])
                 return assistantMessage
             } catch (error: any) {
-                console.error("Chat error:", error)
+                console.error("Chat error:", error?.message || error)
                 const errorMessage = getUserFriendlyErrorMessage(error, "chat")
 
                 if (options.onError) {

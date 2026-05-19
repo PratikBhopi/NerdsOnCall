@@ -328,7 +328,7 @@ export default function MyQuestionsPage() {
                                                                                     const errorDiv =
                                                                                         e
                                                                                             .currentTarget
-                                                                                            .nextElementSibling
+                                                                                            .nextElementSibling as HTMLElement
                                                                                     if (
                                                                                         errorDiv
                                                                                     )
@@ -584,7 +584,7 @@ export default function MyQuestionsPage() {
                                                                                     const errorDiv =
                                                                                         e
                                                                                             .currentTarget
-                                                                                            .nextElementSibling
+                                                                                            .nextElementSibling as HTMLElement
                                                                                     if (
                                                                                         errorDiv
                                                                                     )
@@ -683,9 +683,9 @@ export default function MyQuestionsPage() {
                                     No Questions Yet
                                 </h3>
                                 <p className="text-slate-600 mb-6">
-                                    You haven't asked any questions yet. Start
-                                    learning by asking your first question in
-                                    the explore section or request a tutor!
+                                    You haven&apos;t asked any questions yet.
+                                    Start learning by asking your first question
+                                    in the explore section or request a tutor!
                                 </p>
                                 <div className="flex flex-col sm:flex-row gap-3 justify-center">
                                     <Link href="/questions/ask">

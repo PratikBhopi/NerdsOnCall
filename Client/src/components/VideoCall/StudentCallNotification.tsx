@@ -13,14 +13,14 @@ interface StudentCallNotificationProps {
 
 export function StudentCallNotification({}: StudentCallNotificationProps) {
     const { user } = useAuth()
-    const { } = useWebSocket()
+    const {} = useWebSocket()
     const router = useRouter()
 
     // State for incoming call handling
     const [incomingCall, setIncomingCall] = useState<{
-        callerId: string;
-        callerName: string;
-        sessionId: string;
+        callerId: string
+        callerName: string
+        sessionId: string
     } | null>(null)
     const [showIncomingCallModal, setShowIncomingCallModal] = useState(false)
 
@@ -28,7 +28,9 @@ export function StudentCallNotification({}: StudentCallNotificationProps) {
     // Video calling functionality is preserved through other mechanisms
     useEffect(() => {
         // Component functionality disabled - WebSocket doubt notifications removed
-        console.log("StudentCallNotification: Component disabled - WebSocket doubt notifications removed")
+        console.log(
+            "StudentCallNotification: Component disabled - WebSocket doubt notifications removed"
+        )
     }, [user, router])
 
     // Disabled handlers - preserving structure for future video calling implementation
@@ -49,12 +51,11 @@ export function StudentCallNotification({}: StudentCallNotificationProps) {
         <>
             {/* Component disabled - WebSocket doubt notifications removed */}
             {false && incomingCall && (
-
                 <IncomingCallModal
                     isOpen={showIncomingCallModal}
-                    callerName={incomingCall.callerName}
-                    callerId={incomingCall.callerId}
-                    sessionId={incomingCall.sessionId}
+                    callerName={incomingCall?.callerName || ""}
+                    callerId={incomingCall?.callerId || ""}
+                    sessionId={incomingCall?.sessionId || ""}
                     onAccept={handleAcceptIncomingCall}
                     onDecline={handleDeclineIncomingCall}
                 />

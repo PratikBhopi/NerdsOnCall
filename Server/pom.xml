@@ -22,14 +22,6 @@
     </properties>
 
     <dependencies>
-        <!-- Add this Lombok dependency -->
-        <dependency>
-            <groupId>org.projectlombok</groupId>
-            <artifactId>lombok</artifactId>
-            <version>1.18.30</version>
-            <scope>provided</scope>
-        </dependency>
-        
         <!-- Spring Boot Starters -->
         <dependency>
             <groupId>org.springframework.boot</groupId>
@@ -126,12 +118,6 @@
             <version>7.2.5</version>
         </dependency>
 
-        <!-- WebSocket & STOMP -->
-        <dependency>
-            <groupId>org.springframework</groupId>
-            <artifactId>spring-messaging</artifactId>
-        </dependency>
-
         <!-- Jackson for JSON processing -->
         <dependency>
             <groupId>com.fasterxml.jackson.core</groupId>
@@ -142,6 +128,7 @@
         <dependency>
             <groupId>org.projectlombok</groupId>
             <artifactId>lombok</artifactId>
+            <version>1.18.30</version>
             <optional>true</optional>
         </dependency>
 

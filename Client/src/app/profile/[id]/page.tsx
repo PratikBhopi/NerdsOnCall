@@ -85,7 +85,7 @@ export default function PublicProfilePage() {
             setReviews(response.data)
         } catch (error: any) {
             console.error("Error fetching reviews:", error)
-            // If it's a 400 error (not a tutor), just set empty reviews
+            // If it&apos;s a 400 error (not a tutor), just set empty reviews
             if (error.response?.status === 400) {
                 setReviews([])
             }
@@ -159,8 +159,8 @@ export default function PublicProfilePage() {
                             Profile Not Found
                         </h1>
                         <p className="text-slate-600 mb-6">
-                            The profile you're looking for doesn't exist or has
-                            been removed.
+                            The profile you&apos;re looking for doesn&apos;t
+                            exist or has been removed.
                         </p>
                         <Button onClick={() => router.push("/browse-tutors")}>
                             <ArrowLeft className="h-4 w-4 mr-2" />
@@ -198,7 +198,7 @@ export default function PublicProfilePage() {
                             <div>
                                 <h1 className="text-3xl font-bold text-slate-800 mb-2">
                                     {profileData.firstName}{" "}
-                                    {profileData.lastName}'s Profile
+                                    {profileData.lastName}&apos;s Profile
                                 </h1>
                                 <p className="text-slate-600">
                                     {isTutor ? "Professional Tutor" : "Student"}{" "}
@@ -287,7 +287,7 @@ export default function PublicProfilePage() {
                                                             sessions)
                                                         </span>
                                                     </div>
-                                                    {profileData.hourlyRate && (
+                                                    {typeof profileData.hourlyRate === "number" && profileData.hourlyRate > 0 && (
                                                         <div className="flex items-center space-x-1">
                                                             <DollarSign className="h-4 w-4 text-green-600" />
                                                             <span className="font-medium">

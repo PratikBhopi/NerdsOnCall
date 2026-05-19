@@ -63,6 +63,7 @@ Thumbs.db
 *.db
 *.sqlite
 
-# Application properties (if they contain sensitive data)
-# application-local.properties
-# application-dev.properties 
+# Environment / secrets
+.env
+.env.*
+!.env.example

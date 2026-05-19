@@ -199,7 +199,7 @@ export default function AskQuestionPage() {
             const requestPayload = {
                 title: formData.title.trim(),
                 description: formData.description.trim(),
-                subject: formData.subject, // This should be the enum value like 'MATH', 'PHYSICS', etc.
+                subject: formData.subject, // This should be the enum value like &apos;MATH&apos;, &apos;PHYSICS&apos;, etc.
                 imageUrls: imageUrls,
             }
 
@@ -303,8 +303,8 @@ export default function AskQuestionPage() {
                                         <span className="text-black mt-0.5">
                                             💡
                                         </span>
-                                        Keep it clear and concise, like you're
-                                        asking a friend.
+                                        Keep it clear and concise, like
+                                        you&apos;re asking a friend.
                                     </p>
                                 </div>
 
@@ -363,7 +363,7 @@ export default function AskQuestionPage() {
                                             📝
                                         </span>
                                         The more details you provide, the better
-                                        answers you'll receive.
+                                        answers you&apos;ll receive.
                                     </p>
                                 </div>
 

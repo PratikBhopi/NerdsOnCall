@@ -64,7 +64,7 @@ import {
 } from "lucide-react"
 
 export default function DashboardPage() {
-    const { user, loading, setUser } = useAuth()
+    const { user, loading } = useAuth()
     const [isOnline, setIsOnline] = useState(user?.isOnline || false)
     const [updatingStatus, setUpdatingStatus] = useState(false)
     const [subscription, setSubscription] = useState<Subscription | null>(null)
@@ -142,7 +142,7 @@ export default function DashboardPage() {
             hasFetchedRef.current = true
             tutorRefetch()
         }
-    }, [user, loading, refetch, tutorRefetch, fetchSubscription])
+    }, [user, loading, refetch, tutorRefetch])
 
     // Helper function to get icon component from string
     const getIconComponent = (iconName: string) => {
@@ -172,29 +172,12 @@ export default function DashboardPage() {
         setUpdatingStatus(true)
         try {
             const newStatus = !isOnline
-            const response = await api.put(`/users/online-status?isOnline=${newStatus}`)
-
-            // The new API returns an object with isOnline status
-            const responseData = response.data
-            const actualStatus = responseData.isOnline
-
-            // Persist to localStorage
-            localStorage.setItem("isOnline", JSON.stringify(actualStatus))
-            setIsOnline(actualStatus)
-
-            // Update user in AuthContext
-            if (user) {
-                setUser({ ...user, isOnline: actualStatus })
-            }
-            
-            console.log("Status updated successfully:", responseData)
+            await api.put(`/users/online-status?isOnline=${newStatus}`)
+            setIsOnline(newStatus)
+            // Update the user context if needed
+            window.location.reload() // Simple refresh to update the user state
         } catch (error) {
             console.error("Error updating online status:", error)
-            // Optionally revert state on error
-            const storedStatus = localStorage.getItem("isOnline")
-            if (storedStatus) {
-                setIsOnline(JSON.parse(storedStatus))
-            }
         } finally {
             setUpdatingStatus(false)
         }

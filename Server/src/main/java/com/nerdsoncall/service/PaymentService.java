@@ -27,10 +27,7 @@ public class PaymentService {
 
     public Order createOrder(long amount, String currency, String receipt) throws RazorpayException {
         JSONObject orderRequest = new JSONObject();
-
-        System.out.println("\n credentials: " + razorpayClient);
-    
-        orderRequest.put("amount", amount); // amount in paise
+        orderRequest.put("amount", amount);
         orderRequest.put("currency", currency);
         orderRequest.put("receipt", receipt);
         orderRequest.put("payment_capture", 1);

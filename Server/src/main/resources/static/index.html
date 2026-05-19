@@ -142,25 +142,19 @@
     </head>
     <body>
         <div class="container">
-            <h1 class="logo">🧠 NerdsOnCall</h1>
+            <h1 class="logo">NerdsOnCall</h1>
             <p class="subtitle">Real-Time Doubt-Solving Platform Backend</p>
 
-            <div class="status">🚀 Server Running Successfully</div>
+            <div class="status">Server Running</div>
 
             <div class="button-group">
                 <a href="/health" class="button">Health Check</a>
                 <a href="/info" class="button secondary">API Info</a>
-                <a
-                    href="https://supabase.com/dashboard"
-                    class="button secondary"
-                    target="_blank"
-                    >Supabase Dashboard</a
-                >
             </div>
 
             <div class="info-grid">
                 <div class="api-info">
-                    <h3>📡 API Information</h3>
+                    <h3>API Information</h3>
                     <div class="endpoint">
                         <strong>Base URL:</strong>
                         <span>/</span>
@@ -175,22 +169,25 @@
                     </div>
                     <div class="endpoint">
                         <strong>WebSocket:</strong>
-                        <span>WS /ws</span>
+                        <span>WS /ws/webrtc, /ws/session</span>
                     </div>
                 </div>
                 <div class="api-info">
-                    <h3>🛠️ Available Endpoints</h3>
+                    <h3>Available Endpoints</h3>
                     <div class="endpoint">/auth/* - Authentication</div>
                     <div class="endpoint">/users/* - User Management</div>
+                    <div class="endpoint">/tutors/* - Tutor Discovery</div>
                     <div class="endpoint">/sessions/* - Sessions</div>
                     <div class="endpoint">/doubts/* - Doubts</div>
+                    <div class="endpoint">/api/questions/* - Q&amp;A</div>
+                    <div class="endpoint">/plans/* - Subscription Plans</div>
                     <div class="endpoint">/subscriptions/* - Subscriptions</div>
-                    <div class="endpoint">/payments/* - Payments</div>
+                    <div class="endpoint">/payment/* - Razorpay Payments</div>
                     <div class="endpoint">/feedback/* - Feedback</div>
                 </div>
             </div>
 
-            <p class="version">Powered by Spring Boot | GoodTeam | Super 69</p>
+            <p class="version">Powered by Spring Boot</p>
         </div>
 
         <script>

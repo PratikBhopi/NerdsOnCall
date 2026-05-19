@@ -1,81 +1,114 @@
 # NerdsOnCall
 
-**Real‑Time Doubt‑Solving Platform**
+**Real-Time Doubt-Solving Platform**
 
-A comprehensive platform connecting students and tutors through live video calls for instant doubt resolution. Built with Spring Boot backend and Next.js frontend.
+A web platform that connects students with tutors for instant doubt resolution
+over live video, with a shared whiteboard, screen sharing, and in-call chat.
 
----
+## Overview
 
-## 🚀 Project Overview
+NerdsOnCall lets a student raise a doubt, get matched with an available tutor,
+and immediately enter a live tutoring session. Sessions are gated by a
+subscription plan (purchased through Razorpay). All real-time communication
+(WebRTC signalling, whiteboard sync, screen share) is handled by the Spring
+Boot backend over native WebSockets.
 
-NerdsOnCall is a real-time educational platform that connects students with tutors for instant doubt resolution through live video calls, interactive whiteboards, and screen sharing.
+## Features
 
-### Key Features
+- Live 1:1 video calls (WebRTC, peer-to-peer)
+- Shared whiteboard / canvas with real-time sync
+- Screen sharing
+- Tutor presence / online status
+- Student doubt creation and tutor matching
+- Public Q&A board (questions + tutor solutions)
+- Subscription plans via **Razorpay** (INR)
+- Monthly tutor payouts (currently stubbed via `RazorpayPayoutService`)
+- PDF receipts emailed to students on subscription purchase
+- File / video uploads via Cloudinary
+- AI study assistant for students/tutors (Groq / llama-3.1-8b-instant, Next.js route handler)
 
--   **Live Video Calls**: WebRTC-powered real-time communication
--   **Interactive Whiteboard**: Shared canvas for visual explanations
--   **Screen Sharing**: Full screen or window sharing capabilities
--   **Real-Time Matching**: Instant tutor-student connections
--   **Subscription Management**: Flexible billing plans via Stripe
--   **Session History**: Complete logs and feedback system
+## Tech Stack
 
----
+### Backend (`Server/`)
+- Java 17, Spring Boot 3.2.0
+- Spring Security + JWT auth (no OAuth providers)
+- Spring Data JPA + PostgreSQL
+- Native WebSockets (`/ws/webrtc`, `/ws/session`) — no STOMP, no Socket.IO
+- Razorpay Java SDK (payments)
+- Cloudinary SDK (media uploads)
+- iText 7 (PDF receipts)
+- Spring Mail (SMTP, Gmail)
+- `spring-dotenv` auto-loads `Server/.env`
 
-## 🏗 Architecture
+### Frontend (`Client/`)
+- Next.js 15 (App Router), React 18, TypeScript
+- Tailwind CSS v4
+- TanStack Query v5 + React Context
+- Axios
+- Native `WebSocket` (no Socket.IO)
+- WebRTC via the browser API
+- `react-hot-toast`, `lucide-react`, `react-grid-layout`
+- `katex` + `react-markdown` for math rendering in chat
+- Groq API — `llama-3.1-8b-instant` (only inside the `/api/chat` Next.js route)
 
-### Backend (Spring Boot)
+## Prerequisites
 
--   **Framework**: Spring Boot 3.2.0
--   **Database**: PostgreSQL (via Supabase)
--   **Authentication**: JWT
--   **Real-time**: WebSocket + STOMP
--   **Payments**: Stripe
+- Java 17+
+- Maven 3.9+
+- Node.js 18+
+- PostgreSQL 14+
+- Accounts: Razorpay (test mode is fine), Cloudinary, Gmail SMTP, Groq API key
 
-### Frontend (Next.js)
+## Setup
 
--   **Framework**: Next.js 15.3.4 (App Router)
--   **Language**: TypeScript
--   **Styling**: Tailwind CSS v4
--   **State Management**: React Context + TanStack Query v5
--   **Real-time**: Socket.IO Client
--   **Video Calls**: WebRTC
+### 1. Backend
 
----
+```bash
+cd Server
+cp .env .env.local   # then edit values, or just edit Server/.env directly
+mvn spring-boot:run
+```
 
-## 📁 Project Structure
+The server starts on `http://localhost:8080`. On first run, JPA will create
+the schema in the configured PostgreSQL database (`ddl-auto: update`).
+
+Required env vars (see `Server/.env`):
+
+| Variable | Purpose |
+| --- | --- |
+| `DB_URL`, `DB_USERNAME`, `DB_PASSWORD` | PostgreSQL connection |
+| `JWT_SECRET` | Signing key for JWTs (use a 256+ bit secret in prod) |
+| `MAIL_USERNAME`, `MAIL_PASSWORD` | Gmail SMTP credentials (app password) |
+| `RAZORPAY_KEY_ID`, `RAZORPAY_KEY_SECRET` | Razorpay API credentials |
+| `CLOUDINARY_CLOUD_NAME`, `CLOUDINARY_API_KEY`, `CLOUDINARY_API_SECRET` | Cloudinary uploads |
+| `FRONTEND_URL` | Base URL of the frontend (used in password reset links) |
+| `PORT` | Server port (defaults to `8080`) |
+
+### 2. Frontend
+
+```bash
+cd Client
+npm install
+npm run dev
+```
+
+The app runs on `http://localhost:3000`.
+
+Required env vars in `Client/.env` (or `.env.local`):
+
+| Variable | Purpose |
+| --- | --- |
+| `NEXT_PUBLIC_API_URL` | Backend base URL, e.g. `http://localhost:8080` |
+| `GROQ_API_KEY` | Groq key for the `/api/chat` route (server-side only, get one free at console.groq.com) |
+
+## Project Structure
 
 ```
 NerdsOnCall/
-├── Server/                    # Spring Boot Backend
-│   ├── src/main/java/com/nerdsoncall/
-│   │   ├── config/               # Configuration classes
-│   │   ├── controller/           # REST Controllers
-│   │   ├── dto/                  # Data Transfer Objects
-│   │   ├── entity/               # JPA Entities
-│   │   ├── repository/           # Data Repositories
-│   │   ├── security/             # Security components
-│   │   └── service/              # Business Logic
-│   └── README_BACKEND.md         # Backend setup & API docs
-├── Client/                    # Next.js Frontend
-│   ├── src/
-│   │   ├── app/                  # Next.js App Router pages
-│   │   ├── components/           # React components
-│   │   ├── context/              # React Context providers
-│   │   ├── lib/                  # Utility libraries
-│   │   └── types/                # TypeScript definitions
-│   └── README_FRONTEND.md        # Frontend setup & component docs
-└── README.md                  # This file
+├── Client/   Next.js frontend
+├── Server/   Spring Boot backend
+└── README.md
 ```
 
----
-
-## 📚 Documentation
-
-For detailed setup instructions, API documentation, and development guides:
-
--   **Backend**: See [Server/README_BACKEND.md](Server/README_BACKEND.md)
--   **Frontend**: See [Client/README_FRONTEND.md](Client/README_FRONTEND.md)
-
----
-
-**Built with ❤️ for education and learning**
+For module-level details, see `Server/README_BACKEND.md` and
+`Client/README_FRONTEND.md`.

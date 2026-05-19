@@ -1,11 +1,13 @@
 spring:
     application:
         name: nerds-on-call
+    main:
+        allow-circular-references: true
     datasource:
-        url: jdbc:postgresql://localhost:5432/nerdsoncall_db
+        url: ${DB_URL:jdbc:postgresql://localhost:5432/nerdsoncall_db}
         driver-class-name: org.postgresql.Driver
-        username: postgres
-        password: shiv
+        username: ${DB_USERNAME:postgres}
+        password: ${DB_PASSWORD:postgres}
         hikari:
             auto-commit: true
             maximum-pool-size: 5
@@ -14,15 +16,13 @@ spring:
         database-platform: org.hibernate.dialect.PostgreSQLDialect
         hibernate:
             ddl-auto: update
-        show-sql: true
+        show-sql: false
         database: postgresql
-    security:
-        oauth2:
-            client:
-                registration:
-                    google:
-                        client-id: ${GOOGLE_CLIENT_ID}
-                        client-secret: ${GOOGLE_CLIENT_SECRET}
+    servlet:
+        multipart:
+            enabled: true
+            max-file-size: 50MB
+            max-request-size: 50MB
     mail:
         host: smtp.gmail.com
         port: 587
@@ -36,32 +36,26 @@ spring:
                         enable: true
 
 server:
-    port: ${PORT}
+    port: ${PORT:8080}
 
 jwt:
-    secret: ${JWT_SECRET:your_jwt_secret_key_should_be_at_least_256_bits_long_for_security_purposes_in_production}
+    secret: ${JWT_SECRET:change_me_to_a_secure_256_bit_secret_in_production_environment_only}
     expiration: 86400000
-
-supabase:
-    url: ${SUPABASE_URL:https://oawusllurfsclcnbdehn.supabase.co}
-    service-key: ${SUPABASE_SERVICE_KEY}
 
 razorpay:
     key-id: ${RAZORPAY_KEY_ID}
     key-secret: ${RAZORPAY_KEY_SECRET}
-
-# stripe:
-#     secret-key: ${STRIPE_SECRET_KEY:sk_test_placeholder}
-#     webhook-secret: ${STRIPE_WEBHOOK_SECRET:whsec_placeholder}
 
 logging:
     level:
         com.nerdsoncall: INFO
         org.springframework.security: INFO
 
-# Frontend URL for password reset links
 app:
     frontend-url: ${FRONTEND_URL:http://localhost:3000}
+    video:
+        max-size: 52428800
+        allowed-types: video/mp4,video/webm,video/quicktime,video/x-msvideo,video/x-ms-wmv
 
 ---
 spring:

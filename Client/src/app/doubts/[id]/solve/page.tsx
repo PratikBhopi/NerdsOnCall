@@ -202,13 +202,14 @@ export default function SolveDoubtPage() {
                     <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
                         <Card>
                             <CardContent className="p-12 text-center">
-                                <AlertCircle classame="h-12 w-12 text-red-500 mx-auto mb-4" />
+                                <AlertCircle className="h-12 w-12 text-red-500 mx-auto mb-4" />
                                 <h3 className="text-lg font-semibold text-slate-800 mb-2">
                                     Doubt Not Found
                                 </h3>
                                 <p className="text-slate-600 mb-4">
-                                    The doubt you're looking for doesn't exist
-                                    or you don't have permission to access it.
+                                    The doubt you&apos;re looking for
+                                    doesn&apos;t exist or you don&apos;t have
+                                    permission to access it.
                                 </p>
                                 <Link href="/my-students">
                                     <Button>Back to Student Requests</Button>

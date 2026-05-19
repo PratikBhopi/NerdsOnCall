@@ -13,7 +13,6 @@ export interface User {
   rating?: number;
   totalSessions?: number;
   totalEarnings?: number;
-  stripeAccountId?: string;
   createdAt: string;
   updatedAt: string;
 }
@@ -77,13 +76,11 @@ export interface Session {
 export interface Subscription {
   id: number;
   user: User;
-  planType: "BASIC" | "STANDARD" | "PREMIUM";
+  planType: "STARTER" | "PRO" | "PREMIUM" | string;
   status: "ACTIVE" | "CANCELED" | "EXPIRED" | "PAST_DUE" | "PENDING";
   price: number;
   startDate: string;
   endDate: string;
-  stripeSubscriptionId?: string;
-  stripeCustomerId?: string;
   sessionsUsed: number;
   sessionsLimit?: number;
   planName?: string;
@@ -193,7 +190,6 @@ export interface Plan {
   sessionsLimit: number;
   description: string;
   duration: "MONTHLY" | "QUARTERLY" | "YEARLY";
+  planType: "STARTER" | "PRO" | "PREMIUM";
   isActive: boolean;
-  createdAt: string;
-  updatedAt: string;
 }

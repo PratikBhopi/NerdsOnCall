@@ -3,19 +3,21 @@ package com.nerdsoncall.controller;
 import com.nerdsoncall.entity.Subscription;
 import com.nerdsoncall.entity.User;
 import com.nerdsoncall.service.PaymentService;
+import com.nerdsoncall.service.PlanService;
 import com.nerdsoncall.service.SubscriptionService;
 import com.nerdsoncall.service.UserService;
+import com.nerdsoncall.subscription.SubscriptionPlan;
+import com.razorpay.Order;
+import com.razorpay.RazorpayException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.*;
-import com.nerdsoncall.entity.Plan;
-import com.nerdsoncall.service.PlanService;
-import java.util.List;
-import com.razorpay.Order;
-import com.razorpay.RazorpayException;
-import java.util.Map;
+
+import java.time.LocalDateTime;
 import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 @RestController
 @RequestMapping("/subscriptions")
@@ -76,7 +78,6 @@ public class SubscriptionController {
             Subscription subscription = activeSubscription.get();
             Map<String, Object> response = new HashMap<>();
 
-            // Ensure default values for null fields
             int sessionsUsed = subscription.getSessionsUsed() != null ? subscription.getSessionsUsed() : 0;
             int sessionsLimit = subscription.getSessionsLimit() != null ? subscription.getSessionsLimit() : 0;
 
@@ -84,15 +85,13 @@ public class SubscriptionController {
             response.put("sessionsUsed", sessionsUsed);
             response.put("sessionsLimit", sessionsLimit);
             response.put("sessionsRemaining", Math.max(0, sessionsLimit - sessionsUsed));
-            response.put("canAskDoubt", sessionsUsed < sessionsLimit); // This applies to both doubts and video calls
-            response.put("canStartVideoCall", sessionsUsed < sessionsLimit); // Explicit field for video calls
+            response.put("canAskDoubt", sessionsUsed < sessionsLimit);
+            response.put("canStartVideoCall", sessionsUsed < sessionsLimit);
             response.put("planName", subscription.getPlanName() != null ? subscription.getPlanName() : "Unknown Plan");
             response.put("planType", subscription.getPlanType() != null ? subscription.getPlanType() : "UNKNOWN");
 
             return ResponseEntity.ok(response);
         } catch (Exception e) {
-            System.err.println("Error in getSessionStatus: " + e.getMessage());
-            e.printStackTrace();
             Map<String, Object> errorResponse = new HashMap<>();
             errorResponse.put("hasActiveSubscription", false);
             errorResponse.put("message", "Error retrieving session status: " + e.getMessage());
@@ -125,74 +124,40 @@ public class SubscriptionController {
                 return ResponseEntity.badRequest().body("Only students can subscribe");
             }
 
-            Plan plan = planService.getPlanEntity(planId)
+            SubscriptionPlan plan = planService.getPlanById(planId)
                     .orElseThrow(() -> new RuntimeException("Plan not found"));
 
-            // Plan price is already in INR, no conversion needed
-            double priceInINR = plan.getPrice(); // Already in INR
-
-            // Amount in paise (Razorpay expects INR in paise)
+            double priceInINR = plan.priceInr();
             long amount = (long) (priceInINR * 100);
             String currency = "INR";
             String receipt = "receipt_" + user.getId() + "_" + System.currentTimeMillis();
             Order order = paymentService.createOrder(amount, currency, receipt);
 
-            // Create a pending subscription linked to this order
+            LocalDateTime startDate = LocalDateTime.now();
+            LocalDateTime endDate = endDateForPlan(plan, startDate);
+
             Subscription subscription = new Subscription();
             subscription.setUser(user);
             subscription.setStatus(Subscription.Status.PENDING);
-            subscription.setPrice(priceInINR); // Store the converted INR price
-            // Set start and end dates based on plan duration
-            java.time.LocalDateTime startDate = java.time.LocalDateTime.now();
-            java.time.LocalDateTime endDate;
-            switch (plan.getDuration()) {
-                case MONTHLY:
-                    endDate = startDate.plusMonths(1);
-                    break;
-                case YEARLY:
-                    endDate = startDate.plusYears(1);
-                    break;
-                case QUARTERLY:
-                    endDate = startDate.plusMonths(3);
-                    break;
-                default:
-                    endDate = startDate.plusMonths(1); // fallback
-            }
+            subscription.setPrice(priceInINR);
             subscription.setStartDate(startDate);
             subscription.setEndDate(endDate);
-            subscription.setSessionsLimit(plan.getSessionsLimit());
+            subscription.setSessionsLimit(plan.dailyDoubtLimit());
             subscription.setSessionsUsed(0);
-            subscription.setPlanName(plan.getName());
-            subscription.setStatus(Subscription.Status.ACTIVE);
-            // Set planType based on duration
-            String planType;
-            switch (plan.getDuration()) {
-                case MONTHLY:
-                    planType = "BASIC";
-                    break;
-                case QUARTERLY:
-                    planType = "STANDARD";
-                    break;
-                case YEARLY:
-                    planType = "PREMIUM";
-                    break;
-                default:
-                    planType = "BASIC";
-            }
-            subscription.setPlanType(planType);
+            subscription.setPlanName(plan.name());
+            subscription.setPlanType(plan.planType());
             subscription.setRazorpayOrderId((String) order.get("id"));
             subscriptionService.saveSubscription(subscription);
 
-            // Return order details needed for Razorpay checkout
             Map<String, Object> response = new HashMap<>();
             response.put("orderId", order.get("id"));
             response.put("amount", order.get("amount"));
             response.put("currency", order.get("currency"));
             response.put("key", paymentService.getRazorpayKeyId());
-            response.put("name", plan.getName());
-            response.put("description", plan.getDescription());
+            response.put("name", plan.name());
+            response.put("description", plan.description());
             response.put("userEmail", user.getEmail());
-            response.put("planId", plan.getId());
+            response.put("planId", plan.id());
             return ResponseEntity.ok(response);
         } catch (RazorpayException e) {
             return ResponseEntity.badRequest().body("Failed to create Razorpay order: " + e.getMessage());
@@ -200,7 +165,7 @@ public class SubscriptionController {
             return ResponseEntity.badRequest().body("Failed to create checkout order: " + e.getMessage());
         }
     }
-    
+
     @PostMapping("/cancel/{id}")
     public ResponseEntity<?> cancelSubscription(@PathVariable Long id, Authentication authentication) {
         try {
@@ -223,4 +188,12 @@ public class SubscriptionController {
             return ResponseEntity.badRequest().body("Failed to check session eligibility: " + e.getMessage());
         }
     }
-} 
+
+    static LocalDateTime endDateForPlan(SubscriptionPlan plan, LocalDateTime startDate) {
+        return switch (plan.duration()) {
+            case MONTHLY -> startDate.plusMonths(1);
+            case QUARTERLY -> startDate.plusMonths(3);
+            case YEARLY -> startDate.plusYears(1);
+        };
+    }
+}

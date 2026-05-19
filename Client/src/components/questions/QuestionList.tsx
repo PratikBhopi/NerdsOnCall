@@ -1,7 +1,7 @@
 "use client"
 
 import { useState, useEffect, useMemo, useRef } from "react"
-import { toast } from "sonner"
+import toast from "react-hot-toast"
 import { QuestionCard } from "./QuestionCard"
 import { api } from "@/lib/api"
 import { getUserFriendlyErrorMessage } from "@/utils/errorMessages"

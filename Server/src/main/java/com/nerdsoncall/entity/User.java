@@ -69,9 +69,7 @@ public class User {
     @Column(precision = 10)
     private Double hourlyRate = 0.0;
 
-    // Stripe Connect account for tutors
-    // private String stripeAccountId;
-    private String razorpayContactId; // For RazorpayX payouts
+    private String razorpayContactId;
 
     @CreationTimestamp
     private LocalDateTime createdAt;

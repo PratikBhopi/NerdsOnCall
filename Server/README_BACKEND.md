@@ -1,206 +1,176 @@
-# NerdsOnCall API Documentation
+# NerdsOnCall Backend
 
-This document provides a concise overview of the database schema and API endpoints for the NerdsOnCall backend.
+Spring Boot service that powers the NerdsOnCall doubt-solving platform.
 
-## 1. Database Schema
+## Stack
 
-The database is built on PostgreSQL. The schema consists of the following tables:
+- Java 17, Spring Boot 3.2.0
+- Spring Web, Spring Security, Spring Data JPA, Spring WebSocket, Spring Mail
+- PostgreSQL (JPA / Hibernate)
+- JWT auth (`io.jsonwebtoken`)
+- Razorpay Java SDK (payments + payouts)
+- Cloudinary SDK (image / video uploads)
+- iText 7 (PDF receipt generation)
+- `me.paulschwarz:spring-dotenv` for `.env` loading
 
-### `users`
+## Running locally
 
-Stores user account information for students, tutors, and admins.
+```bash
+mvn spring-boot:run                       # default profile, uses Server/.env
+mvn spring-boot:run -Dspring-boot.run.profiles=local   # uses application-local.yml
+```
 
-| Field               | Data Type        | Constraints      | Description                           |
-| :------------------ | :--------------- | :--------------- | :------------------------------------ |
-| `id`                | `bigserial`      | Primary Key      | Unique identifier for the user        |
-| `email`             | `varchar(255)`   | Not Null, Unique | User's email address                  |
-| `password`          | `varchar(255)`   | Not Null         | Hashed password                       |
-| `first_name`        | `varchar(255)`   | Not Null         | User's first name                     |
-| `last_name`         | `varchar(255)`   | Not Null         | User's last name                      |
-| `role`              | `varchar(255)`   | Not Null         | `STUDENT`, `TUTOR`, or `ADMIN`        |
-| `is_active`         | `boolean`        | Not Null         | If the user account is active         |
-| `is_online`         | `boolean`        | Not Null         | User's current online status          |
-| `profile_picture`   | `varchar(255)`   |                  | URL to profile picture                |
-| `phone_number`      | `varchar(255)`   |                  | User's phone number                   |
-| `bio`               | `varchar(255)`   |                  | Short biography (for tutors)          |
-| `subjects`          | `varchar(255)[]` |                  | List of subjects a tutor teaches      |
-| `rating`            | `float8`         |                  | Average rating for a tutor            |
-| `total_sessions`    | `integer`        |                  | Total number of completed sessions    |
-| `total_earnings`    | `float8`         |                  | Total earnings (for tutors)           |
-| `hourly_rate`       | `float8`         |                  | Tutor's hourly rate                   |
-| `stripe_account_id` | `varchar(255)`   |                  | Stripe Connect account ID for payouts |
-| `created_at`        | `timestamp`      |                  | Timestamp of creation                 |
-| `updated_at`        | `timestamp`      |                  | Timestamp of last update              |
+Server starts on `http://localhost:${PORT:8080}`. JPA runs with
+`ddl-auto: update` by default and `create-drop` in the `local` profile.
 
-### `doubts`
+## Configuration
 
-Stores the details of questions or doubts submitted by students.
+| File | Purpose |
+| --- | --- |
+| `application.yml` | Main config; reads everything from env vars |
+| `application-local.yml` | Convenience profile for local dev (`create-drop`) |
+| `Server/.env` | Local environment variables (auto-loaded by `spring-dotenv`) |
 
-| Field                | Data Type        | Constraints             | Description                                                |
-| :------------------- | :--------------- | :---------------------- | :--------------------------------------------------------- |
-| `id`                 | `bigserial`      | Primary Key             | Unique identifier for the doubt                            |
-| `student_id`         | `bigint`         | Not Null, FK to `users` | The student who created the doubt                          |
-| `subject`            | `varchar(255)`   | Not Null                | The subject of the doubt                                   |
-| `title`              | `varchar(255)`   | Not Null                | A brief title for the doubt                                |
-| `description`        | `oid`            | Not Null                | A detailed description of the doubt                        |
-| `priority`           | `varchar(255)`   | Not Null                | `LOW`, `MEDIUM`, `HIGH`, `URGENT`                          |
-| `status`             | `varchar(255)`   | Not Null                | `OPEN`, `ASSIGNED`, `IN_PROGRESS`, `RESOLVED`, `CANCELLED` |
-| `attachments`        | `varchar(255)[]` |                         | URLs to any attached files                                 |
-| `preferred_tutor_id` | `bigint`         |                         | ID of a specific tutor the student requested               |
-| `created_at`         | `timestamp`      |                         | Timestamp of creation                                      |
-| `updated_at`         | `timestamp`      |                         | Timestamp of last update                                   |
+See the root `README.md` for the full list of required environment variables.
 
-### `sessions`
+## Database schema
 
-Stores information about each tutoring session.
+JPA generates the schema from the entities in `com.nerdsoncall.entity`:
 
-| Field               | Data Type       | Constraints              | Description                                              |
-| :------------------ | :-------------- | :----------------------- | :------------------------------------------------------- |
-| `id`                | `bigserial`     | Primary Key              | Unique identifier for the session                        |
-| `student_id`        | `bigint`        | Not Null, FK to `users`  | The student in the session                               |
-| `tutor_id`          | `bigint`        | FK to `users`            | The tutor in the session                                 |
-| `doubt_id`          | `bigint`        | Not Null, FK to `doubts` | The doubt this session is for                            |
-| `status`            | `varchar(255)`  | Not Null                 | `PENDING`, `ACTIVE`, `COMPLETED`, `CANCELLED`, `TIMEOUT` |
-| `start_time`        | `timestamp`     | Not Null                 | When the session started                                 |
-| `end_time`          | `timestamp`     |                          | When the session ended                                   |
-| `duration_minutes`  | `bigint`        |                          | Total duration of the session in minutes                 |
-| `cost`              | `numeric(10,2)` |                          | Total cost of the session                                |
-| `tutor_earnings`    | `numeric(10,2)` |                          | How much the tutor earned                                |
-| `session_id`        | `varchar(255)`  |                          | Unique ID for WebRTC signaling                           |
-| `room_id`           | `varchar(255)`  |                          | Video call room identifier                               |
-| `session_notes`     | `oid`           |                          | Shared notes from the session                            |
-| `canvas_data`       | `oid`           |                          | JSON data for the collaborative canvas                   |
-| `recording_enabled` | `boolean`       |                          | If the session was recorded                              |
-| `recording_url`     | `varchar(255)`  |                          | URL to the session recording                             |
-| `created_at`        | `timestamp`     |                          | Timestamp of creation                                    |
-| `updated_at`        | `timestamp`     |                          | Timestamp of last update                                 |
+- `users` — students, tutors, admins (`role`); tutors have `bio`, `subjects`,
+  `rating`, `hourlyRate`, `totalEarnings`, `razorpayContactId`.
+- `doubts` — student-raised doubts (subject, title, description, priority,
+  status, optional `preferredTutorId`).
+- `sessions` — tutoring sessions linked to a doubt (and optionally direct
+  call sessions). Tracks status, timing, cost, `tutorEarnings`, payment status.
+- `subscriptions` — student plans tied to a Razorpay order. Status starts at
+  `PENDING` and only flips to `ACTIVE` after payment signature verification.
+- `feedbacks` — post-session ratings (1–5) and comments, in either direction.
+- `payouts` — monthly tutor payouts grouped over a date range.
+- Subscription plans are defined in code (`SubscriptionPlanCatalog`), not in
+  the database. The legacy `plans` table is no longer used.
+- `tutor_status` — tutor availability / online state.
+- `common_questions` — public Q&A: student questions + tutor solutions (with
+  optional Cloudinary-hosted video answer).
 
-### `subscriptions`
+Hand-written SQL migrations live in `src/main/resources/db/migration/` for
+columns that are added to existing tables outside JPA's reach.
 
-Manages user subscription plans.
+## HTTP API
 
-| Field                    | Data Type      | Constraints             | Description                                 |
-| :----------------------- | :------------- | :---------------------- | :------------------------------------------ |
-| `id`                     | `bigserial`    | Primary Key             | Unique identifier for the subscription      |
-| `user_id`                | `bigint`       | Not Null, FK to `users` | The user who owns the subscription          |
-| `plan_type`              | `varchar(255)` | Not Null                | `BASIC`, `STANDARD`, `PREMIUM`              |
-| `status`                 | `varchar(255)` | Not Null                | `ACTIVE`, `CANCELED`, `EXPIRED`, `PAST_DUE` |
-| `price`                  | `float8`       | Not Null                | The price paid for the subscription         |
-| `start_date`             | `timestamp`    | Not Null                | Subscription start date                     |
-| `end_date`               | `timestamp`    | Not Null                | Subscription end date                       |
-| `stripe_subscription_id` | `varchar(255)` |                         | ID from Stripe                              |
-| `sessions_used`          | `integer`      |                         | Number of sessions used in the period       |
-| `sessions_limit`         | `integer`      |                         | Maximum number of sessions allowed          |
-| `created_at`             | `timestamp`    |                         | Timestamp of creation                       |
-| `updated_at`             | `timestamp`    |                         | Timestamp of last update                    |
+All endpoints are relative to the server base URL.
 
-### `feedbacks`
+### Discovery
 
-Stores ratings and comments from users after a session.
+| Method | Path | Description |
+| --- | --- | --- |
+| GET | `/` | Static landing page |
+| GET | `/info`, `/welcome` | JSON service info and endpoint map |
+| GET | `/health` | Liveness check |
+| GET | `/health/db` | DB connectivity check |
 
-| Field         | Data Type      | Constraints                | Description                              |
-| :------------ | :------------- | :------------------------- | :--------------------------------------- |
-| `id`          | `bigserial`    | Primary Key                | Unique identifier for the feedback       |
-| `session_id`  | `bigint`       | Not Null, FK to `sessions` | The session this feedback is for         |
-| `reviewer_id` | `bigint`       | Not Null, FK to `users`    | The user who gave the feedback           |
-| `reviewee_id` | `bigint`       | Not Null, FK to `users`    | The user who received the feedback       |
-| `rating`      | `integer`      | Not Null                   | Rating from 1 to 5                       |
-| `comment`     | `oid`          |                            | The text comment                         |
-| `type`        | `varchar(255)` | Not Null                   | `STUDENT_TO_TUTOR` or `TUTOR_TO_STUDENT` |
-| `created_at`  | `timestamp`    |                            | Timestamp of creation                    |
+### Auth (`AuthController`)
 
-### `payouts`
+| Method | Path | Description |
+| --- | --- | --- |
+| POST | `/auth/register` | Register a student or tutor |
+| POST | `/auth/login` | Returns `{ token, user }` |
+| GET  | `/auth/me` | Current authenticated user |
+| POST | `/auth/forgot-password` | Email a reset link |
+| POST | `/auth/reset-password` | Consume a reset token |
 
-Tracks money paid out to tutors.
+### Users / Tutors
 
-| Field                | Data Type      | Constraints             | Description                                                 |
-| :------------------- | :------------- | :---------------------- | :---------------------------------------------------------- |
-| `id`                 | `bigserial`    | Primary Key             | Unique identifier for the payout                            |
-| `tutor_id`           | `bigint`       | Not Null, FK to `users` | The tutor receiving the payout                              |
-| `amount`             | `float8`       | Not Null                | The amount of the payout                                    |
-| `status`             | `varchar(255)` | Not Null                | `PENDING`, `PROCESSING`, `COMPLETED`, `FAILED`, `CANCELLED` |
-| `period_start`       | `timestamp`    | Not Null                | Start of the earnings period                                |
-| `period_end`         | `timestamp`    | Not Null                | End of the earnings period                                  |
-| `stripe_transfer_id` | `varchar(255)` |                         | The transfer ID from Stripe                                 |
-| `created_at`         | `timestamp`    |                         | Timestamp of creation                                       |
-| `updated_at`         | `timestamp`    |                         | Timestamp of last update                                    |
+| Method | Path | Description |
+| --- | --- | --- |
+| GET  | `/users/profile` | Current user profile |
+| PUT  | `/users/profile` | Update profile |
+| PUT  | `/users/online-status` | Update online flag |
+| GET  | `/users/{id}` | User by ID |
+| GET  | `/tutors/**` | Tutor discovery (online, top-rated, by subject) |
 
----
+### Doubts
 
-## 2. API Endpoints
+| Method | Path | Description |
+| --- | --- | --- |
+| POST | `/api/doubts` | Create a doubt |
+| GET  | `/api/doubts/my-doubts` | Student's own doubts |
+| GET  | `/api/doubts/available` | Open doubts for tutors |
+| GET  | `/api/doubts/preferred` | Doubts where the tutor is preferred |
+| GET  | `/api/doubts/{id}` | Get one doubt |
+| PUT  | `/api/doubts/{id}/status` | Change status |
 
-All endpoints are relative to the base URL (e.g., `http://localhost:8080`).
+### Sessions
 
-| Method                       | Path                                | Description                                            |
-| :--------------------------- | :---------------------------------- | :----------------------------------------------------- |
-| `GET`                        | `/`                                 | Serves the static `index.html` welcome page.           |
-| `GET`                        | `/info`                             | Returns a JSON object with API details.                |
-| `GET`                        | `/health`                           | Health check endpoint. Returns status `UP`.            |
-| `GET`                        | `/welcome`                          | Alias for the `/info` endpoint.                        |
-|                              |                                     |                                                        |
-| **Authentication**           |                                     |                                                        |
-| `POST`                       | `/auth/register`                    | Register a new user.                                   |
-| `POST`                       | `/auth/login`                       | Login and receive a JWT token.                         |
-| `POST`                       | `/auth/logout`                      | Logout the current user.                               |
-| `GET`                        | `/auth/me`                          | Get the current authenticated user's details.          |
-|                              |                                     |                                                        |
-| **Users**                    |                                     |                                                        |
-| `GET`                        | `/users/profile`                    | Get the profile of the current user.                   |
-| `PUT`                        | `/users/profile`                    | Update the profile of the current user.                |
-| `GET`                        | `/users/tutors`                     | Get a list of online tutors (can filter by `subject`). |
-| `GET`                        | `/users/tutors/top-rated`           | Get a list of top-rated tutors.                        |
-| `GET`                        | `/users/{id}`                       | Get user details by their ID.                          |
-| `PUT`                        | `/users/online-status`              | Update the `isOnline` status for the current user.     |
-|                              |                                     |                                                        |
-| **Doubts**                   |                                     |                                                        |
-| `POST`                       | `/doubts`                           | Create a new doubt.                                    |
-| `GET`                        | `/doubts/my-doubts`                 | Get all doubts created by the current user.            |
-| `GET`                        | `/doubts/available`                 | Get all open doubts available for tutors.              |
-| `GET`                        | `/doubts/preferred`                 | Get doubts where the current tutor is preferred.       |
-| `GET`                        | `/doubts/{id}`                      | Get a specific doubt by its ID.                        |
-| `PUT`                        | `/doubts/{id}/status`               | Update the status of a doubt.                          |
-|                              |                                     |                                                        |
-| **Sessions**                 |                                     |                                                        |
-| `POST`                       | `/sessions`                         | Create a new tutoring session.                         |
-| `GET`                        | `/sessions/my-sessions`             | Get all sessions for the current user.                 |
-| `GET`                        | `/sessions/{id}`                    | Get a specific session by its ID.                      |
-| `PUT`                        | `/sessions/{id}/end`                | End a session and calculate costs.                     |
-| `PUT`                        | `/sessions/{id}/notes`              | Update the shared notes for a session.                 |
-| `PUT`                        | `/sessions/{id}/canvas`             | Update the shared canvas data for a session.           |
-|                              |                                     |                                                        |
-| **Subscriptions & Payments** |                                     |                                                        |
-| `POST`                       | `/subscriptions/checkout`           | Creates a Stripe checkout session for a plan.          |
-| `POST`                       | `/subscriptions/cancel/{id}`        | Cancels a user's subscription.                         |
-| `GET`                        | `/subscriptions/my-subscription`    | Get the current user's active subscription.            |
-| `GET`                        | `/subscriptions/history`            | Get the subscription history for the current user.     |
-| `GET`                        | `/subscriptions/can-create-session` | Check if the user can start a new session.             |
-| `POST`                       | `/stripe/webhook`                   | Handles incoming webhook events from Stripe.           |
-|                              |                                     |                                                        |
-| **Feedback**                 |                                     |                                                        |
-| `POST`                       | `/feedback`                         | Submit feedback for a completed session.               |
-| `GET`                        | `/feedback/tutor/{tutorId}`         | Get all feedback for a specific tutor.                 |
-| `GET`                        | `/feedback/my-feedback`             | Get all feedback submitted by the current user.        |
+| Method | Path | Description |
+| --- | --- | --- |
+| POST | `/sessions` | Create a session |
+| GET  | `/sessions/my-sessions` | User's sessions |
+| GET  | `/sessions/{id}` | Get session |
+| PUT  | `/sessions/{id}/end` | End and bill |
+| PUT  | `/sessions/{id}/notes` | Update notes |
+| PUT  | `/sessions/{id}/canvas` | Persist canvas snapshot |
 
----
+### Plans, Subscriptions, Payments
 
-## 3. Project Structure
+| Method | Path | Description |
+| --- | --- | --- |
+| GET  | `/plans` | List active plans (public) |
+| POST | `/subscriptions/checkout` | Create a Razorpay order (returns key, orderId, amount, etc.) |
+| POST | `/payment/verify` | Verify Razorpay signature and activate subscription |
+| GET  | `/subscriptions/my-subscription` | Current active subscription |
+| GET  | `/subscriptions/history` | Subscription history |
+| GET  | `/subscriptions/session-status` | Remaining sessions on current plan |
+| GET  | `/subscriptions/can-create-session` | Boolean: can the student start a new session |
+| POST | `/subscriptions/cancel/{id}` | Cancel a subscription |
 
-The project follows a standard Maven project structure. Below is an overview of the key directories and their purpose:
+### Feedback / Dashboard / Uploads / Q&A
 
-| Path                                 | Description                                                                                                                                                                                                                                                                                   |
-| :----------------------------------- | :-------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| **`/src/main/java/com/nerdsoncall`** | The root package for the Java source code.                                                                                                                                                                                                                                                    |
-| ┣ **`/config`**                      | Contains Spring configuration classes. `SecurityConfig` sets up web security, authentication, and authorization rules. `WebSocketConfig` configures the WebSocket message broker for real-time communication.                                                                                 |
-| ┣ **`/controller`**                  | Holds all the Spring MVC controllers that handle incoming HTTP requests. Each controller maps to a specific API resource (e.g., `AuthController` for authentication, `DoubtController` for doubts).                                                                                           |
-| ┣ **`/dto`**                         | (Data Transfer Object) Contains plain Java objects used to transfer data between the client and the server. For example, `LoginRequest` carries login credentials from the client.                                                                                                            |
-| ┣ **`/entity`**                      | Contains the JPA entity classes that map to the database tables. Each class (e.g., `User`, `Doubt`) represents a table in the database and is used by Hibernate for ORM.                                                                                                                      |
-| ┣ **`/repository`**                  | Contains the Spring Data JPA repositories. These interfaces provide high-level methods for database operations (e.g., `save()`, `findById()`, `findAll()`) without requiring you to write boilerplate SQL.                                                                                    |
-| ┣ **`/security`**                    | Includes security-related utility classes. `JwtUtil` handles the creation and validation of JWTs. `JwtAuthenticationFilter` is a filter that intercepts requests to validate the token and set up the security context. `JwtAuthenticationEntryPoint` handles failed authentication attempts. |
-| ┣ **`/service`**                     | Contains the business logic of the application. Services (e.g., `UserService`, `DoubtService`) are called by controllers and coordinate operations, often using one or more repositories.                                                                                                     |
-| **`/src/main/resources`**            | Contains non-Java files, such as configuration and static assets.                                                                                                                                                                                                                             |
-| ┣ **`/static`**                      | Holds static web content like `index.html`.                                                                                                                                                                                                                                                   |
-| ┗ **`application.yml`**              | The main configuration file for the Spring Boot application. It contains settings for the database connection, server port, JWT secret, and other application properties. It also includes profiles for different environments like `production`.                                             |
-| **`/pom.xml`**                       | The Project Object Model file for Maven. It defines the project's dependencies (like Spring Boot, PostgreSQL driver), build plugins, and other project information.                                                                                                                           |
-| **`railway.json`**                   | The configuration file for deploying the application to Railway. It specifies the build and start commands for the production environment.                                                                                                                                                    |
+| Method | Path | Description |
+| --- | --- | --- |
+| POST | `/feedback` | Submit feedback for a session |
+| GET  | `/feedback/**` | Tutor / own feedback queries |
+| GET  | `/dashboard/**` | Aggregated stats for tutor + student dashboards |
+| POST | `/upload/**` | Cloudinary-backed file uploads |
+| `/api/questions/**` | Public Q&A board |
 
----
+### WebSocket endpoints
+
+| Path | Handler | Purpose |
+| --- | --- | --- |
+| `/ws/webrtc?userId=...&sessionId=...` | `WebRTCSignalingHandler` | WebRTC offer/answer/ICE + presence |
+| `/ws/session?userId=...&sessionId=...` | `TutoringSessionHandler` | Whiteboard, drawing events, screen share |
+
+No STOMP, no SockJS, no Socket.IO — both endpoints are plain text WebSockets.
+
+## Source layout
+
+```
+src/main/java/com/nerdsoncall
+├── NerdsOnCallApplication.java   # entry point, @EnableAsync + @EnableScheduling
+├── config/                       # Security, WebSocket, Cloudinary, DataSource
+├── controller/                   # REST controllers
+├── dto/                          # Request / response payloads
+├── entity/                       # JPA entities
+├── repository/                   # Spring Data repositories
+├── scheduler/                    # @Scheduled jobs (payouts)
+├── security/                     # JWT filter, entry point, util
+├── service/                      # Business logic
+└── websocket/                    # WebRTC + tutoring session handlers
+```
+
+## Scheduled jobs
+
+- `SubscriptionSchedulerService.resetDailySessionUsage` — daily at 00:00
+- `SubscriptionSchedulerService.processExpiredSubscriptions` — hourly
+- `SubscriptionSchedulerService.cleanupOldExpiredSubscriptions` — daily at 02:00
+- `SubscriptionSchedulerService.logSubscriptionStatistics` — daily at 01:00
+- `PayoutScheduler.processMonthlyPayouts` — daily at 02:59 (stubbed payouts)
+
+## Known limitations
+
+- `RazorpayPayoutService` is a stub. Real Razorpay payout calls are commented
+  out; `PayoutService.executePendingPayouts` uses dummy transaction IDs.
+- Email and PDF templates are minimal; iText is used for receipts only.
+- WebRTC uses public STUN only; production deployments will need a TURN
+  server for users behind symmetric NATs.

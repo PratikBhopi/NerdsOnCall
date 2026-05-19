@@ -13,6 +13,7 @@ import {
 import toast from "react-hot-toast"
 import { Phone, PhoneOff, User } from "lucide-react"
 import { VideoCallModal } from "./VideoCallModal"
+import { api } from "@/lib/api"
 
 interface TutorCallNotificationProps {
     onCallReceived?: (studentId: number, studentName: string) => void
