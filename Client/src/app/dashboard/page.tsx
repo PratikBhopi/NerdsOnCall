@@ -172,10 +172,14 @@ export default function DashboardPage() {
         setUpdatingStatus(true)
         try {
             const newStatus = !isOnline
-            await api.put(`/users/online-status?isOnline=${newStatus}`)
-            setIsOnline(newStatus)
-            // Update the user context if needed
-            window.location.reload() // Simple refresh to update the user state
+            const response = await api.put(
+                `/users/online-status?isOnline=${newStatus}`
+            )
+            const updated =
+                response.data?.isOnline ??
+                response.data?.user?.isOnline ??
+                newStatus
+            setIsOnline(updated)
         } catch (error) {
             console.error("Error updating online status:", error)
         } finally {

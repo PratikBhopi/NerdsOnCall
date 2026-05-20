@@ -31,8 +31,7 @@ NerdsOnCall connects **students** with **tutors** for:
 - **Doubts**, public **Q&A**, and **subscriptions** (Razorpay, INR)
 - **AI study assistant** (Groq, server-side on the frontend)
 
-<details>
-<summary><strong>Feature list</strong></summary>
+### Features
 
 - Live video calls (WebRTC, peer-to-peer signalling via backend WebSockets)
 - Real-time whiteboard / canvas sync
@@ -43,8 +42,6 @@ NerdsOnCall connects **students** with **tutors** for:
 - Subscription plans (Razorpay Checkout)
 - PDF receipts by email on purchase
 - Media uploads (Cloudinary)
-
-</details>
 
 ---
 
@@ -86,8 +83,7 @@ flowchart TB
   API --> Gmail[Gmail SMTP]
 ```
 
-<details>
-<summary><strong>Tech stack (accurate)</strong></summary>
+## Tech stack
 
 ### Backend (`Server/`)
 
@@ -115,8 +111,6 @@ flowchart TB
 | Payments | Razorpay Checkout (script tag, no Stripe) |
 
 **Not used:** Socket.IO, STOMP, Supabase, OpenAI, Gemini, Stripe, MySQL, MongoDB.
-
-</details>
 
 ---
 
@@ -150,8 +144,7 @@ npm run dev
 
 → [http://localhost:3000](http://localhost:3000)
 
-<details>
-<summary><strong>Environment variables (cheat sheet)</strong></summary>
+### Environment variables
 
 **Backend** (`Server/.env`):
 
@@ -183,8 +176,6 @@ GROQ_API_KEY=gsk_...
 FRONTEND_URL=https://nerds-on-call.vercel.app
 ```
 
-</details>
-
 ---
 
 ## Deployment
@@ -198,8 +189,7 @@ FRONTEND_URL=https://nerds-on-call.vercel.app
 
 Backend must be served over **HTTPS** so the Vercel app can call REST and **WSS** without mixed-content errors.
 
-<details>
-<summary><strong>Smoke test after deploy</strong></summary>
+### Smoke test after deploy
 
 1. Open [https://nerds-on-call.vercel.app/](https://nerds-on-call.vercel.app/)
 2. Register / log in
@@ -207,8 +197,6 @@ Backend must be served over **HTTPS** so the Vercel app can call REST and **WSS*
 4. Check [https://nerdsoncall-api.shivam.app/health/db](https://nerdsoncall-api.shivam.app/health/db) → `"status":"UP"`
 5. Test video call (WebSocket + WebRTC)
 6. Test AI chat on `/chat` (Groq via Vercel route)
-
-</details>
 
 ---
 

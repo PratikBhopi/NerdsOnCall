@@ -77,6 +77,7 @@ public class UserController {
             } else {
                 tutors = tutorStatusService.getOnlineTutors();
             }
+            tutors.forEach(t -> t.setIsOnline(true));
             return ResponseEntity.ok(tutors);
         } catch (Exception e) {
             return ResponseEntity.badRequest().body("Failed to get online tutors: " + e.getMessage());
@@ -121,9 +122,8 @@ public class UserController {
                 return ResponseEntity.badRequest().body("Only tutors can update online status");
             }
             
-            // Update status in TutorStatus table
-            TutorStatus.Status status = isOnline ? TutorStatus.Status.ONLINE : TutorStatus.Status.OFFLINE;
-            TutorStatus tutorStatus = tutorStatusService.setTutorStatus(user.getId(), status);
+            TutorStatus tutorStatus = tutorStatusService.setTutorOnline(user.getId(), isOnline);
+            user.setIsOnline(isOnline);
             
             // Return user with updated status info
             Map<String, Object> response = Map.of(

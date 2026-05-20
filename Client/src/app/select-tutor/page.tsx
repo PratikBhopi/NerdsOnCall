@@ -65,8 +65,13 @@ export default function SelectTutorPage() {
     const fetchTutors = async () => {
         try {
             setLoading(true)
-            const response = await api.get("/users/tutors")
-            setTutors(response.data)
+            const response = await api.get("/users/tutors/online")
+            setTutors(
+                (response.data as Tutor[]).map((tutor) => ({
+                    ...tutor,
+                    isOnline: true,
+                }))
+            )
         } catch (error) {
             console.error("Error fetching tutors:", error)
             setTutors([])

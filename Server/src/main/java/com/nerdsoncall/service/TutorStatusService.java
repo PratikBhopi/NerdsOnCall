@@ -44,6 +44,19 @@ public class TutorStatusService {
     }
     
     /**
+     * Set online/offline on both TutorStatus and User.isOnline (keeps dashboard and listings in sync).
+     */
+    public TutorStatus setTutorOnline(Long tutorId, boolean isOnline) {
+        TutorStatus.Status status = isOnline ? TutorStatus.Status.ONLINE : TutorStatus.Status.OFFLINE;
+        TutorStatus tutorStatus = setTutorStatus(tutorId, status);
+        userRepository.findById(tutorId).ifPresent(user -> {
+            user.setIsOnline(isOnline);
+            userRepository.save(user);
+        });
+        return tutorStatus;
+    }
+
+    /**
      * Set tutor status explicitly
      */
     public TutorStatus setTutorStatus(Long tutorId, TutorStatus.Status status) {
