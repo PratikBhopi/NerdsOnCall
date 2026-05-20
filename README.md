@@ -183,7 +183,7 @@ FRONTEND_URL=https://nerds-on-call.vercel.app
 | Part | Host | Notes |
 | --- | --- | --- |
 | Frontend | **Vercel** | Root directory: `Client`. Set env vars in project settings. |
-| Backend | **VPS** (e.g. Oracle Always Free) | JAR + systemd + Nginx + Let's Encrypt |
+| Backend | **VPS** (Oracle Instance) | JAR + systemd + Nginx + Let's Encrypt |
 | Database | **PostgreSQL on same VPS** | Not a separate paid DB service |
 | AI chat | **Vercel** | Groq key only in Vercel; never exposed to browser |
 
