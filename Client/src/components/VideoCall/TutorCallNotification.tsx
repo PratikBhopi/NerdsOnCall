@@ -13,6 +13,7 @@ import {
 import toast from "react-hot-toast"
 import { Phone, PhoneOff, User } from "lucide-react"
 import { VideoCallModal } from "./VideoCallModal"
+import { api } from "@/lib/api"
 
 interface TutorCallNotificationProps {
     onCallReceived?: (studentId: number, studentName: string) => void
@@ -404,6 +405,23 @@ export function TutorCallNotification({
             addLog(
                 `Accepted call from ${incomingCall.studentName} - Tutor is now busy`
             )
+
+            // Send call accepted message to notify student
+            if (socketRef.current && socketRef.current.readyState === WebSocket.OPEN) {
+                const acceptMessage = {
+                    type: "call_accepted",
+                    to: incomingCall.studentId.toString(),
+                    from: user?.id.toString(),
+                    sessionId: incomingCall.sessionId,
+                    acceptorName: `${user?.firstName} ${user?.lastName}`,
+                }
+                try {
+                    socketRef.current.send(JSON.stringify(acceptMessage))
+                    addLog("Call accepted message sent successfully")
+                } catch (error) {
+                    addLog(`Failed to send accept message: ${error}`)
+                }
+            }
         }
     }
 
