@@ -53,3 +53,5 @@ Your application restricts access to endpoints based on the authenticated user's
 
 **Q6: Why do you store the user's role in the JWT instead of querying the database on every request?**
 **Answer:** "Our authentication mechanism is designed to be stateless. By embedding the role directly inside the JWT payload, the backend can determine the user's identity and permissions simply by verifying the token's cryptographic signature. This completely eliminates the need to perform a database query on every single API request just to check permissions, drastically improving application performance and reducing database load."
+
+### ~ just for prep
