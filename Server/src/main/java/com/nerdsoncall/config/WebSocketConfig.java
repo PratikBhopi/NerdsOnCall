@@ -11,22 +11,54 @@ import com.nerdsoncall.websocket.WebRTCSignalingHandler;
 
 @Configuration
 @EnableWebSocket
-public class WebSocketConfig implements WebSocketConfigurer {
+@EnableWebSocketMessageBroker
+public class WebSocketConfig implements WebSocketConfigurer, WebSocketMessageBrokerConfigurer {
 
-    @Autowired
-    private WebRTCSignalingHandler webRTCSignalingHandler;
+    @Bean
+    public SignalingHandler signalingHandler() {
+        return new SignalingHandler();
+    }
 
-    @Autowired
-    private TutoringSessionHandler tutoringSessionHandler;
+    @Bean
+    public WebRTCSignalingHandler webRTCSignalingHandler() {
+        return new WebRTCSignalingHandler();
+    }
+
+    @Bean
+    public TutoringSessionHandler tutoringSessionHandler() {
+        return new TutoringSessionHandler();
+    }
 
     @Override
     public void registerWebSocketHandlers(WebSocketHandlerRegistry registry) {
-        // WebRTC signaling endpoint (offer/answer/ICE candidates + presence)
-        registry.addHandler(webRTCSignalingHandler, "/ws/webrtc")
-                .setAllowedOriginPatterns("*");
+        // Basic signaling endpoint
+        registry.addHandler(signalingHandler(), "/ws/signaling")
+                .setAllowedOrigins("*"); // In production, restrict to your frontend domain
 
-        // Tutoring session endpoint (whiteboard, screen share, drawing events)
-        registry.addHandler(tutoringSessionHandler, "/ws/session")
-                .setAllowedOriginPatterns("*");
+        // WebRTC specific signaling endpoint
+        registry.addHandler(webRTCSignalingHandler(), "/ws/webrtc")
+                .setAllowedOrigins("*");
+
+        // Tutoring session endpoint for canvas and screen sharing
+        registry.addHandler(tutoringSessionHandler(), "/ws/session")
+                .setAllowedOrigins("*");
+    }
+
+    @Override
+    public void configureMessageBroker(MessageBrokerRegistry config) {
+        // Enable a simple memory-based message broker to send messages to clients
+        // on destinations prefixed with /topic and /queue
+        config.enableSimpleBroker("/topic", "/queue");
+
+        // Set prefix for messages bound for methods annotated with @MessageMapping
+        config.setApplicationDestinationPrefixes("/app");
+    }
+
+    @Override
+    public void registerStompEndpoints(StompEndpointRegistry registry) {
+        // Register STOMP endpoints
+        registry.addEndpoint("/ws/stomp")
+                .setAllowedOrigins("*")
+                .withSockJS();
     }
 }

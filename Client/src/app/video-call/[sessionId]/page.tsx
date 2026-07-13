@@ -950,7 +950,28 @@ export default function VideoCallPage() {
 >>>>>>> bd0b94a14d85d58fade5e8005cca5953e94e08b2
                         message.userName || message.from
                     )
-                    // Handle user joined event if needed
+                    // If we initiated the call and the other user just joined, send the offer
+                    if (isInCallRef.current && peerConnectionRef.current && (peerConnectionRef.current.signalingState === "stable" || peerConnectionRef.current.signalingState === "have-local-offer")) {
+                        try {
+                            const offer = await peerConnectionRef.current.createOffer()
+                            await peerConnectionRef.current.setLocalDescription(offer)
+
+                            if (socketRef.current) {
+                                socketRef.current.send(
+                                    JSON.stringify({
+                                        type: "offer",
+                                        to: message.userId || message.from,
+                                        from: user?.id.toString(),
+                                        sessionId: sessionId,
+                                        data: offer,
+                                    })
+                                )
+                                console.log("📤 Sent offer after user joined")
+                            }
+                        } catch (err) {
+                            console.error("Failed to create offer on user-joined:", err)
+                        }
+                    }
                     break
                 default:
                     console.log("Unknown message type:", message.type)
@@ -1535,6 +1556,10 @@ export default function VideoCallPage() {
 
     const handleOffer = async (message: any) => {
         try {
+            console.log("📥 Received offer, creating answer...");
+            isInCallRef.current = true;
+            setCallStatus("Connecting...");
+            
             if (!peerConnectionRef.current) {
                 createPeerConnection()
 
@@ -1823,21 +1848,7 @@ export default function VideoCallPage() {
                 )
             }
 
-            // Create and send offer
-            const offer = await peerConnectionRef.current!.createOffer()
-            await peerConnectionRef.current!.setLocalDescription(offer)
-
-            if (socketRef.current) {
-                socketRef.current.send(
-                    JSON.stringify({
-                        type: "offer",
-                        to: otherUserId.toString(),
-                        from: user?.id.toString(),
-                        sessionId: sessionId,
-                        data: offer,
-                    })
-                )
-            }
+            // Offer will be created and sent when the other user joins the session
 
             isInCallRef.current = true
             toast.success("Call initiated!")

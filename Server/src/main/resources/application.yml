@@ -2,19 +2,20 @@ spring:
 <<<<<<< HEAD
   application:
     name: nerds-on-call
+  config:
+    import: optional:file:.env
 
   datasource:
     url: ${SPRING_DATASOURCE_URL}
-    driver-class-name: org.postgresql.Driver
     username: ${SPRING_DATASOURCE_USERNAME}
     password: ${SPRING_DATASOURCE_PASSWORD}
+    driver-class-name: org.postgresql.Driver
     hikari:
-      auto-commit: true
       maximum-pool-size: 5
+      minimum-idle: 1
+      idle-timeout: 30000
       connection-timeout: 30000
-  sql:
-  init:
-    mode: always
+      max-lifetime: 600000
 
   jpa:
     database-platform: org.hibernate.dialect.PostgreSQLDialect
@@ -26,22 +27,14 @@ spring:
   mail:
     host: smtp.gmail.com
     port: 587
-    username: ${MAIL_USERNAME}
-    password: ${MAIL_PASSWORD}
+    username: ${MAIL_USERNAME:}
+    password: ${MAIL_PASSWORD:}
     properties:
       mail:
         smtp:
           auth: true
           starttls:
             enable: true
-
-  security:
-    oauth2:
-      client:
-        registration:
-          google:
-            client-id: ${GOOGLE_CLIENT_ID}
-            client-secret: ${GOOGLE_CLIENT_SECRET}
 
   servlet:
     multipart:
@@ -63,12 +56,12 @@ server:
   address: 0.0.0.0
 
 jwt:
-  secret: ${JWT_SECRET}
+  secret: ${JWT_SECRET:default_secret_change_in_production}
   expiration: 86400000
 
 supabase:
-  url: ${SUPABASE_URL}
-  service-key: ${SUPABASE_SERVICE_KEY}
+  url: ${SUPABASE_URL:}
+  service-key: ${SUPABASE_SERVICE_KEY:}
 
 =======
     application:
@@ -116,22 +109,17 @@ jwt:
 
 >>>>>>> bd0b94a14d85d58fade5e8005cca5953e94e08b2
 razorpay:
-  key-id: ${RAZORPAY_KEY_ID}
-  key-secret: ${RAZORPAY_KEY_SECRET}
+  key-id: ${RAZORPAY_KEY_ID:}
+  key-secret: ${RAZORPAY_KEY_SECRET:}
 
 <<<<<<< HEAD
 cloudinary:
-  cloud-name: ${CLOUDINARY_CLOUD_NAME}
-  api-key: ${CLOUDINARY_API_KEY}
-  api-secret: ${CLOUDINARY_API_SECRET}
-
-db:
-  url: ${DB_URL}
-  username: ${DB_USERNAME}
-  password: ${DB_PASSWORD}
+  cloud-name: ${CLOUDINARY_CLOUD_NAME:}
+  api-key: ${CLOUDINARY_API_KEY:}
+  api-secret: ${CLOUDINARY_API_SECRET:}
 
 app:
-  frontend-url: ${FRONTEND_URL}
+  frontend-url: ${FRONTEND_URL:http://localhost:3000}
   video:
     max-size: 52428800
     allowed-types: video/mp4,video/webm,video/quicktime,video/x-msvideo,video/x-ms-wmv

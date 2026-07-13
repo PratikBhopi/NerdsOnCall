@@ -217,31 +217,6 @@
                     </annotationProcessorPaths>
                 </configuration>
             </plugin>
-<<<<<<< HEAD
-
-            <!-- Skip tests when building -->
-            <plugin>
-                <groupId>org.apache.maven.plugins</groupId>
-                <artifactId>maven-surefire-plugin</artifactId>
-                <version>3.1.2</version>
-                <configuration>
-                    <skipTests>true</skipTests>
-                </configuration>
-            </plugin>
-
-            <!-- ✅ Add this: Spring Boot plugin for packaging -->
-            <plugin>
-                <groupId>org.springframework.boot</groupId>
-                <artifactId>spring-boot-maven-plugin</artifactId>
-                <version>3.2.0</version>
-                <executions>
-                    <execution>
-                        <goals>
-                            <goal>repackage</goal>
-                        </goals>
-                    </execution>
-                </executions>
-=======
             <plugin>
                 <groupId>org.springframework.boot</groupId>
                 <artifactId>spring-boot-maven-plugin</artifactId>
@@ -253,7 +228,6 @@
                         </exclude>
                     </excludes>
                 </configuration>
->>>>>>> bd0b94a14d85d58fade5e8005cca5953e94e08b2
             </plugin>
         </plugins>
     </build>

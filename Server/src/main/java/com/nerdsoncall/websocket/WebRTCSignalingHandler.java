@@ -116,6 +116,9 @@ public class WebRTCSignalingHandler extends TextWebSocketHandler {
                     case "offer":
                     case "answer":
                     case "ice-candidate":
+                    case "incoming_call":
+                    case "call_accepted":
+                    case "tutor_busy":
                         forwardSignalingMessage(session, jsonNode);
                         break;
                     case "leave":

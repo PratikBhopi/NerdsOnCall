@@ -57,7 +57,7 @@ const subjectsList: Subject[] = [
 ]
 
 export default function ProfilePage() {
-    const { user } = useAuth()
+    const { user, setUser } = useAuth()
     const router = useRouter()
     const [isEditing, setIsEditing] = useState(false)
     const [loading, setLoading] = useState(false)
@@ -105,6 +105,7 @@ export default function ProfilePage() {
             setLoading(true)
             const response = await api.put("/users/profile", editData)
             setProfileData(response.data)
+            setUser(response.data)
             setIsEditing(false)
             toast.success("Profile updated successfully!")
         } catch (error: any) {
@@ -320,11 +321,10 @@ export default function ProfilePage() {
                                                     ? "default"
                                                     : "secondary"
                                             }
-                                            className={`w-fit ${
-                                                isTutor
-                                                    ? "bg-slate-700 text-white"
-                                                    : "bg-slate-100 text-slate-700"
-                                            }`}
+                                            className={`w-fit ${isTutor
+                                                ? "bg-slate-700 text-white"
+                                                : "bg-slate-100 text-slate-700"
+                                                }`}
                                         >
                                             {isTutor && (
                                                 <Crown className="w-4 h-4 mr-1" />
