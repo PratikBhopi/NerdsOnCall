@@ -22,7 +22,6 @@
     </properties>
 
     <dependencies>
-<<<<<<< HEAD
         <!-- Lombok -->
         <dependency>
             <groupId>org.projectlombok</groupId>
@@ -31,8 +30,6 @@
             <scope>provided</scope>
         </dependency>
 
-=======
->>>>>>> bd0b94a14d85d58fade5e8005cca5953e94e08b2
         <!-- Spring Boot Starters -->
         <dependency>
             <groupId>org.springframework.boot</groupId>
@@ -58,21 +55,12 @@
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-starter-mail</artifactId>
         </dependency>
-<<<<<<< HEAD
-=======
-        
-        <!-- WebClient (WebFlux) for outbound HTTP -->
->>>>>>> bd0b94a14d85d58fade5e8005cca5953e94e08b2
         <dependency>
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-starter-webflux</artifactId>
         </dependency>
 
-<<<<<<< HEAD
         <!-- PostgreSQL for Supabase -->
-=======
-        <!-- PostgreSQL -->
->>>>>>> bd0b94a14d85d58fade5e8005cca5953e94e08b2
         <dependency>
             <groupId>org.postgresql</groupId>
             <artifactId>postgresql</artifactId>
@@ -142,7 +130,6 @@
             <version>7.2.5</version>
         </dependency>
 
-<<<<<<< HEAD
         <!-- WebSocket & STOMP -->
         <dependency>
             <groupId>org.springframework</groupId>
@@ -150,27 +137,12 @@
         </dependency>
 
         <!-- JSON -->
-=======
-        <!-- Jackson for JSON processing -->
->>>>>>> bd0b94a14d85d58fade5e8005cca5953e94e08b2
         <dependency>
             <groupId>com.fasterxml.jackson.core</groupId>
             <artifactId>jackson-databind</artifactId>
         </dependency>
 
-<<<<<<< HEAD
         <!-- DevTools -->
-=======
-        <!-- Lombok for cleaner code -->
-        <dependency>
-            <groupId>org.projectlombok</groupId>
-            <artifactId>lombok</artifactId>
-            <version>1.18.30</version>
-            <optional>true</optional>
-        </dependency>
-
-        <!-- Development tools -->
->>>>>>> bd0b94a14d85d58fade5e8005cca5953e94e08b2
         <dependency>
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-devtools</artifactId>
