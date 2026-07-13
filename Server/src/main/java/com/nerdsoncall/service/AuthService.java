@@ -24,6 +24,9 @@ public class AuthService {
     private UserService userService;
 
     @Autowired
+    private TutorStatusService tutorStatusService;
+
+    @Autowired
     private JwtUtil jwtUtil;
 
     @Autowired
@@ -36,15 +39,12 @@ public class AuthService {
     private String frontendUrl;
 
     public String login(String email, String password) {
-        Authentication authentication = authenticationManager.authenticate(
+        authenticationManager.authenticate(
             new UsernamePasswordAuthenticationToken(email, password)
         );
 
         User user = userService.findByEmail(email)
                 .orElseThrow(() -> new RuntimeException("User not found"));
-
-        // Update online status
-        userService.updateOnlineStatus(user.getId(), true);
 
         return jwtUtil.generateToken(user.getEmail(), user.getId(), user.getRole().name());
     }
@@ -56,7 +56,11 @@ public class AuthService {
     public void logout(String email) {
         User user = userService.findByEmail(email)
                 .orElseThrow(() -> new RuntimeException("User not found"));
-        userService.updateOnlineStatus(user.getId(), false);
+        if (user.getRole() == User.Role.TUTOR) {
+            tutorStatusService.setTutorOnline(user.getId(), false);
+        } else {
+            userService.updateOnlineStatus(user.getId(), false);
+        }
     }
 
     public String generateTokenForUser(User user) {

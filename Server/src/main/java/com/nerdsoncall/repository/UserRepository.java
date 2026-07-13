@@ -36,5 +36,11 @@ public interface UserRepository extends JpaRepository<User, Long> {
     @Query("SELECT u FROM User u WHERE u.role = 'TUTOR' AND u.isActive = true AND :subject MEMBER OF u.subjects ORDER BY u.rating DESC")
     List<User> findTopRatedTutorsBySubject(@Param("subject") User.Subject subject);
     
+    // New methods for TutorStatus integration
+    List<User> findByIdInAndRole(List<Long> ids, User.Role role);
+    
+    @Query("SELECT u FROM User u WHERE u.id IN :ids AND u.role = :role AND u.isActive = true AND :subject MEMBER OF u.subjects")
+    List<User> findByIdInAndRoleAndSubjectsContaining(@Param("ids") List<Long> ids, @Param("role") User.Role role, @Param("subject") User.Subject subject);
+    
     Optional<User> findByResetToken(String resetToken);
 } 

@@ -23,6 +23,7 @@ import {
     Upload,
     X,
     Paperclip,
+    Clapperboard,
 } from "lucide-react"
 import Link from "next/link"
 import toast from "react-hot-toast"
@@ -499,9 +500,7 @@ export default function SolveDoubtPage() {
                                             )}
                                         </div>
                                         <p className="text-xs text-slate-500 mt-2 flex items-start gap-2">
-                                            <span className="text-blue-600 mt-0.5">
-                                                🎥
-                                            </span>
+                                            <Clapperboard className="h-4 w-4 text-blue-600 mt-0.5 flex-shrink-0" />
                                             Record yourself explaining the
                                             solution step by step. This helps
                                             students understand better.

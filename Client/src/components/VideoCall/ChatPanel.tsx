@@ -74,12 +74,12 @@ export function ChatPanel({
 
     const sendMessage = () => {
         if (!newMessage.trim()) {
-            console.log("❌ Cannot send empty message")
+            console.log("Cannot send empty message")
             return
         }
 
         if (onSendMessage) {
-            console.log("📤 Sending message via callback:", newMessage.trim())
+            console.log("Sending message via callback:", newMessage.trim())
             onSendMessage(newMessage.trim())
         } else if (socket && user) {
             // Fallback to direct WebSocket sending
@@ -93,10 +93,10 @@ export function ChatPanel({
                 id: Date.now().toString(),
             }
 
-            console.log("📤 Sending chat message via WebSocket:", message)
+            console.log("Sending chat message via WebSocket:", message)
             socket.send(JSON.stringify(message))
         } else {
-            console.log("❌ No send method available")
+            console.log("No send method available")
             return
         }
 
@@ -130,7 +130,7 @@ export function ChatPanel({
             {/* Header */}
             <div className="flex items-center justify-between p-3 border-b-3 border-black bg-yellow-300">
                 <h3 className="font-black text-black uppercase tracking-wide">
-                    💬 Live Chat
+                    Live Chat
                 </h3>
                 <Button
                     onClick={onClose}
@@ -144,7 +144,7 @@ export function ChatPanel({
             <div className="flex-1 overflow-y-auto p-4 space-y-3 bg-yellow-50">
                 {messages.length === 0 ? (
                     <div className="text-center text-black font-bold text-sm mt-8">
-                        <p className="mb-2">💬 No messages yet</p>
+                        <p className="mb-2">No messages yet</p>
                         <p className="text-xs uppercase tracking-wide">
                             Start the conversation!
                         </p>

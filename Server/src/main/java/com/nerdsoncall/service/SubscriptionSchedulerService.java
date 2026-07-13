@@ -78,16 +78,6 @@ public class SubscriptionSchedulerService {
     }
 
     /**
-     * Test scheduler that runs every minute to verify scheduling is working
-     * Remove this after testing
-     */
-    @Scheduled(fixedRate = 60000) // Every 60 seconds
-    public void testScheduler() {
-        System.out.println("TEST SCHEDULER: " + LocalDateTime.now() + " - Scheduling is working!");
-        logger.info("Test scheduler executed at {}", LocalDateTime.now());
-    }
-
-    /**
      * Process expired subscriptions every hour
      * Cron expression: "0 0 * * * ?" means:
      * - 0 seconds

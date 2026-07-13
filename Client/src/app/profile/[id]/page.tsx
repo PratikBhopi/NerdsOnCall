@@ -287,7 +287,7 @@ export default function PublicProfilePage() {
                                                             sessions)
                                                         </span>
                                                     </div>
-                                                    {profileData.hourlyRate && (
+                                                    {typeof profileData.hourlyRate === "number" && profileData.hourlyRate > 0 && (
                                                         <div className="flex items-center space-x-1">
                                                             <DollarSign className="h-4 w-4 text-green-600" />
                                                             <span className="font-medium">

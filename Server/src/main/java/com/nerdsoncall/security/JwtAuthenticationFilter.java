@@ -15,6 +15,8 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.web.authentication.WebAuthenticationDetailsSource;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Component;
 import org.springframework.web.filter.OncePerRequestFilter;
 
@@ -23,6 +25,8 @@ import java.io.IOException;
 @Slf4j
 @Component
 public class JwtAuthenticationFilter extends OncePerRequestFilter {
+
+    private static final Logger log = LoggerFactory.getLogger(JwtAuthenticationFilter.class);
 
     @Autowired
     private JwtUtil jwtUtil;
@@ -39,6 +43,7 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
             String username = null;
             String jwtToken = null;
 
+<<<<<<< HEAD
             // Extract JWT token from Authorization header
             if (requestTokenHeader != null && requestTokenHeader.startsWith("Bearer ")) {
                 jwtToken = requestTokenHeader.substring(7);
@@ -69,6 +74,14 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
                 }
             } else if (requestTokenHeader != null && !requestTokenHeader.startsWith("Bearer ")) {
                 log.warn("Authorization header does not start with 'Bearer ' for request: {}", request.getRequestURI());
+=======
+        if (requestTokenHeader != null && requestTokenHeader.startsWith("Bearer ")) {
+            jwtToken = requestTokenHeader.substring(7);
+            try {
+                username = jwtUtil.extractUsername(jwtToken);
+            } catch (Exception e) {
+                log.debug("Invalid or expired JWT: {}", e.getMessage());
+>>>>>>> bd0b94a14d85d58fade5e8005cca5953e94e08b2
             }
 
             // Validate token and set authentication context

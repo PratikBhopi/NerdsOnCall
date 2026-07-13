@@ -15,7 +15,8 @@ import {
     Users, 
     Clock,
     CheckCircle,
-    Loader2
+    Loader2,
+    Lightbulb
 } from "lucide-react"
 
 interface CallInitiationModalProps {
@@ -154,7 +155,7 @@ export function CallInitiationModal({
 
                     {/* Tips */}
                     <div className="text-xs text-slate-500 bg-slate-50 p-3 rounded">
-                        <p className="font-medium mb-1">💡 Before starting the call:</p>
+                        <p className="font-medium mb-1 flex items-center gap-1.5"><Lightbulb className="h-3.5 w-3.5" /> Before starting the call:</p>
                         <ul className="space-y-1">
                             <li>• Make sure your camera and microphone are working</li>
                             <li>• Find a quiet, well-lit space</li>

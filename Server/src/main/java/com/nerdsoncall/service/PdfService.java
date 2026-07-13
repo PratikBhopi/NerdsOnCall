@@ -117,7 +117,7 @@ public class PdfService {
                 .setBorder(Border.NO_BORDER)
                 .setVerticalAlignment(VerticalAlignment.MIDDLE);
 
-        Paragraph companyName = new Paragraph("🎉 NERDS ON CALL")
+        Paragraph companyName = new Paragraph("NERDS ON CALL")
                 .setFont(boldFont)
                 .setFontSize(28)
                 .setFontColor(PURE_BLACK)
@@ -138,7 +138,7 @@ public class PdfService {
                 .setTextAlignment(TextAlignment.RIGHT)
                 .setVerticalAlignment(VerticalAlignment.MIDDLE);
 
-        Paragraph receiptText = new Paragraph("💰 PAYMENT RECEIPT")
+        Paragraph receiptText = new Paragraph("PAYMENT RECEIPT")
                 .setFont(boldFont)
                 .setFontSize(18)
                 .setFontColor(PURE_BLACK)
@@ -176,7 +176,7 @@ public class PdfService {
                 .setBorder(Border.NO_BORDER)
                 .setTextAlignment(TextAlignment.RIGHT);
         
-        Paragraph statusPara = new Paragraph("✅ " + subscription.getStatus().toString())
+        Paragraph statusPara = new Paragraph("" + subscription.getStatus().toString())
                 .setFont(boldFont)
                 .setFontSize(12)
                 .setFontColor(LIME_GREEN);
@@ -191,7 +191,7 @@ public class PdfService {
 
     private void addCustomerInfo(Document document, PdfFont boldFont, PdfFont regularFont, User user) {
         // Customer Information Section
-        Paragraph sectionTitle = new Paragraph("👤 CUSTOMER INFORMATION")
+        Paragraph sectionTitle = new Paragraph("CUSTOMER INFORMATION")
                 .setFont(boldFont)
                 .setFontSize(16)
                 .setFontColor(PURE_BLACK)
@@ -218,7 +218,7 @@ public class PdfService {
 
     private void addSubscriptionDetails(Document document, PdfFont boldFont, PdfFont regularFont, Subscription subscription) {
         // Subscription Details Section
-        Paragraph sectionTitle = new Paragraph("📋 SUBSCRIPTION DETAILS")
+        Paragraph sectionTitle = new Paragraph("SUBSCRIPTION DETAILS")
                 .setFont(boldFont)
                 .setFontSize(16)
                 .setFontColor(PURE_BLACK)
@@ -249,7 +249,7 @@ public class PdfService {
 
     private void addPaymentSummary(Document document, PdfFont boldFont, PdfFont regularFont, Subscription subscription) {
         // Payment Summary Section
-        Paragraph sectionTitle = new Paragraph("💰 PAYMENT SUMMARY")
+        Paragraph sectionTitle = new Paragraph("PAYMENT SUMMARY")
                 .setFont(boldFont)
                 .setFontSize(16)
                 .setFontColor(PURE_BLACK)
@@ -273,7 +273,7 @@ public class PdfService {
 
     private void addFooter(Document document, PdfFont regularFont) {
         // Thank you message
-        Paragraph thankYou = new Paragraph("🎉 THANK YOU FOR CHOOSING NERDS ON CALL! 🚀")
+        Paragraph thankYou = new Paragraph("THANK YOU FOR CHOOSING NERDS ON CALL! ")
                 .setFont(regularFont)
                 .setFontSize(18)
                 .setFontColor(PURE_BLACK)
@@ -369,7 +369,7 @@ public class PdfService {
                 .setBorder(Border.NO_BORDER)
                 .setVerticalAlignment(VerticalAlignment.MIDDLE);
 
-        Paragraph companyName = new Paragraph("💰 NERDS ON CALL")
+        Paragraph companyName = new Paragraph("NERDS ON CALL")
                 .setFont(boldFont)
                 .setFontSize(28)
                 .setFontColor(PURE_BLACK)
@@ -390,7 +390,7 @@ public class PdfService {
                 .setTextAlignment(TextAlignment.RIGHT)
                 .setVerticalAlignment(VerticalAlignment.MIDDLE);
 
-        Paragraph payoutText = new Paragraph("🎉 PAYOUT RECEIPT")
+        Paragraph payoutText = new Paragraph("PAYOUT RECEIPT")
                 .setFont(boldFont)
                 .setFontSize(18)
                 .setFontColor(PURE_BLACK)
@@ -428,7 +428,7 @@ public class PdfService {
                 .setBorder(Border.NO_BORDER)
                 .setTextAlignment(TextAlignment.RIGHT);
 
-        Paragraph statusPara = new Paragraph("✅ " + payout.getStatus().toString())
+        Paragraph statusPara = new Paragraph("" + payout.getStatus().toString())
                 .setFont(boldFont)
                 .setFontSize(12)
                 .setFontColor(LIME_GREEN);
@@ -443,7 +443,7 @@ public class PdfService {
 
     private void addTutorInfo(Document document, PdfFont boldFont, PdfFont regularFont, User tutor) {
         // Tutor Information Section
-        Paragraph sectionTitle = new Paragraph("👨‍🏫 TUTOR INFORMATION")
+        Paragraph sectionTitle = new Paragraph("TUTOR INFORMATION")
                 .setFont(boldFont)
                 .setFontSize(16)
                 .setFontColor(PURE_BLACK)
@@ -472,7 +472,7 @@ public class PdfService {
 
     private void addPayoutDetails(Document document, PdfFont boldFont, PdfFont regularFont, Payout payout) {
         // Payout Details Section
-        Paragraph sectionTitle = new Paragraph("📋 PAYOUT DETAILS")
+        Paragraph sectionTitle = new Paragraph("PAYOUT DETAILS")
                 .setFont(boldFont)
                 .setFontSize(16)
                 .setFontColor(PURE_BLACK)
@@ -502,7 +502,7 @@ public class PdfService {
 
     private void addPayoutSummary(Document document, PdfFont boldFont, PdfFont regularFont, Payout payout) {
         // Payment Summary Section
-        Paragraph sectionTitle = new Paragraph("💰 PAYMENT SUMMARY")
+        Paragraph sectionTitle = new Paragraph("PAYMENT SUMMARY")
                 .setFont(boldFont)
                 .setFontSize(16)
                 .setFontColor(PURE_BLACK)
@@ -526,7 +526,7 @@ public class PdfService {
 
     private void addPayoutFooter(Document document, PdfFont regularFont) {
         // Thank you message
-        Paragraph thankYou = new Paragraph("🎉 THANK YOU FOR BEING AN AMAZING TUTOR! 🚀")
+        Paragraph thankYou = new Paragraph("THANK YOU FOR BEING AN AMAZING TUTOR! ")
                 .setFont(regularFont)
                 .setFontSize(18)
                 .setFontColor(PURE_BLACK)

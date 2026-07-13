@@ -39,7 +39,7 @@ export function useDashboard() {
         }
 
         if (user.role !== "STUDENT") {
-            console.log("👨‍🏫 User is not a student, skipping dashboard fetch")
+            console.log("User is not a student, skipping dashboard fetch")
             setLoading(false)
             return
         }
@@ -48,21 +48,21 @@ export function useDashboard() {
             setLoading(true)
             setError(null)
             console.log(
-                "📊 [MANUAL] Fetching dashboard data for student:",
+                "[MANUAL] Fetching dashboard data for student:",
                 user.firstName,
                 user.lastName
             )
             console.log(
-                "🕐 Fetch triggered at:",
+                "Fetch triggered at:",
                 new Date().toLocaleTimeString()
             )
 
             const response = await api.get("/api/dashboard/student")
-            console.log("✅ Dashboard data received:", response.data)
+            console.log("Dashboard data received:", response.data)
 
             setDashboardData(response.data)
         } catch (err: any) {
-            console.error("❌ Error fetching dashboard data:", err)
+            console.error("Error fetching dashboard data:", err)
 
             // Don't treat dashboard errors as authentication failures
             // Only set error state, don't trigger logout
@@ -96,7 +96,7 @@ export function useDashboard() {
     useEffect(() => {
         // DISABLED AUTO-FETCH TO PREVENT LOGIN ISSUES
         // Dashboard data will only load when manually triggered
-        console.log("📊 Dashboard hook loaded, auto-fetch disabled")
+        console.log("Dashboard hook loaded, auto-fetch disabled")
     }, [user])
 
     return {

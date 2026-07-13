@@ -23,7 +23,7 @@ export function useTutorDashboard() {
 
         if (user.role !== "TUTOR") {
             console.log(
-                "👨‍🎓 User is not a tutor, skipping tutor dashboard fetch"
+                "User is not a tutor, skipping tutor dashboard fetch"
             )
             setLoading(false)
             return
@@ -33,21 +33,21 @@ export function useTutorDashboard() {
             setLoading(true)
             setError(null)
             console.log(
-                "📊 [TUTOR] Fetching dashboard data for tutor:",
+                "[TUTOR] Fetching dashboard data for tutor:",
                 user.firstName,
                 user.lastName
             )
             console.log(
-                "🕐 Fetch triggered at:",
+                "Fetch triggered at:",
                 new Date().toLocaleTimeString()
             )
 
             const response = await api.get("/api/dashboard/tutor")
-            console.log("✅ Tutor dashboard data received:", response.data)
+            console.log("Tutor dashboard data received:", response.data)
 
             setDashboardData(response.data)
         } catch (err: any) {
-            console.error("❌ Error fetching tutor dashboard data:", err)
+            console.error("Error fetching tutor dashboard data:", err)
 
             // Don't treat dashboard errors as authentication failures
             // Only set error state, don't trigger logout
@@ -83,7 +83,7 @@ export function useTutorDashboard() {
     useEffect(() => {
         // DISABLED AUTO-FETCH TO PREVENT LOGIN ISSUES
         // Dashboard data will only load when manually triggered
-        console.log("📊 Tutor dashboard hook loaded, auto-fetch disabled")
+        console.log("Tutor dashboard hook loaded, auto-fetch disabled")
     }, [user])
 
     return {

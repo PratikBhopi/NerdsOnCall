@@ -1,4 +1,5 @@
 spring:
+<<<<<<< HEAD
   application:
     name: nerds-on-call
 
@@ -69,10 +70,56 @@ supabase:
   url: ${SUPABASE_URL}
   service-key: ${SUPABASE_SERVICE_KEY}
 
+=======
+    application:
+        name: nerds-on-call
+    main:
+        allow-circular-references: true
+    datasource:
+        url: ${DB_URL:jdbc:postgresql://localhost:5432/nerdsoncall_db}
+        driver-class-name: org.postgresql.Driver
+        username: ${DB_USERNAME:postgres}
+        password: ${DB_PASSWORD:postgres}
+        hikari:
+            auto-commit: true
+            maximum-pool-size: 5
+            connection-timeout: 30000
+    jpa:
+        database-platform: org.hibernate.dialect.PostgreSQLDialect
+        hibernate:
+            ddl-auto: update
+        show-sql: false
+        database: postgresql
+    servlet:
+        multipart:
+            enabled: true
+            max-file-size: 50MB
+            max-request-size: 50MB
+    mail:
+        host: smtp.gmail.com
+        port: 587
+        username: ${MAIL_USERNAME}
+        password: ${MAIL_PASSWORD}
+        properties:
+            mail:
+                smtp:
+                    auth: true
+                    starttls:
+                        enable: true
+
+server:
+    port: ${PORT:8080}
+
+jwt:
+    secret: ${JWT_SECRET:aAQIuY0bbi5GAn0mQ4eC84piRP8rXODxmJM63xU0pRG}
+    expiration: 86400000
+
+>>>>>>> bd0b94a14d85d58fade5e8005cca5953e94e08b2
 razorpay:
   key-id: ${RAZORPAY_KEY_ID}
   key-secret: ${RAZORPAY_KEY_SECRET}
 
+<<<<<<< HEAD
 cloudinary:
   cloud-name: ${CLOUDINARY_CLOUD_NAME}
   api-key: ${CLOUDINARY_API_KEY}
@@ -94,3 +141,24 @@ logging:
     com.nerdsoncall: INFO
     org.springframework.security: INFO
     org.springframework.web: INFO
+=======
+logging:
+    level:
+        com.nerdsoncall: INFO
+        org.springframework.security: INFO
+
+app:
+    frontend-url: ${FRONTEND_URL:http://localhost:3000}
+    video:
+        max-size: 52428800
+        allowed-types: video/mp4,video/webm,video/quicktime,video/x-msvideo,video/x-ms-wmv
+
+---
+spring:
+    config:
+        activate:
+            on-profile: production
+    jpa:
+        hibernate:
+            ddl-auto: update
+>>>>>>> bd0b94a14d85d58fade5e8005cca5953e94e08b2

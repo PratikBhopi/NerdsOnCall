@@ -24,37 +24,7 @@ export function TutorCallProvider({ children }: TutorCallProviderProps) {
         sessionId: "",
     })
 
-    useEffect(() => {
-        if (user?.role === "TUTOR") {
-            // Listen for incoming video calls via WebSocket
-            const serverUrl =
-                process.env.NEXT_PUBLIC_API_URL?.replace("http", "ws") ||
-                "ws://localhost:8080"
-            const wsUrl = `${serverUrl}/ws/calls?userId=${user.id}`
-
-            const socket = new WebSocket(wsUrl)
-
-            socket.onmessage = (event) => {
-                try {
-                    const data = JSON.parse(event.data)
-                    if (data.type === "incoming_call") {
-                        setIncomingCall({
-                            isOpen: true,
-                            callerName: data.callerName,
-                            callerId: data.callerId,
-                            sessionId: data.sessionId,
-                        })
-                    }
-                } catch (error) {
-                    console.error("Error parsing call message:", error)
-                }
-            }
-
-            return () => {
-                socket.close()
-            }
-        }
-    }, [user])
+    // Incoming calls use /ws/webrtc via TutorCallNotification (server has no /ws/calls endpoint)
 
     const handleAcceptCall = () => {
         setIncomingCall((prev) => ({ ...prev, isOpen: false }))

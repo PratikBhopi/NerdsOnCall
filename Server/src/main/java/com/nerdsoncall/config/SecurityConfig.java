@@ -54,19 +54,22 @@ public class SecurityConfig {
                 .exceptionHandling(exception -> exception.authenticationEntryPoint(jwtAuthenticationEntryPoint))
                 .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
                 .authorizeHttpRequests(auth -> auth
-                .requestMatchers("/api/auth/**").permitAll()
-                        .requestMatchers("/auth/**").permitAll()
-                        .requestMatchers("/stripe/webhook").permitAll()
+                        .requestMatchers("/api/auth/**").permitAll()
+                        .requestMatchers(
+                                "/auth/login",
+                                "/auth/register",
+                                "/auth/forgot-password",
+                                "/auth/reset-password",
+                                "/auth/validate-reset-token"
+                        ).permitAll()
+                        .requestMatchers("/auth/me", "/auth/logout").authenticated()
                         .requestMatchers("/ws/**").permitAll()
-                        .requestMatchers("/health").permitAll()
+                        .requestMatchers("/health/**").permitAll()
                         .requestMatchers("/welcome").permitAll()
                         .requestMatchers("/info").permitAll()
-                        .requestMatchers("/test/**").permitAll()
-                        .requestMatchers("/swagger-ui/**", "/v3/api-docs/**").permitAll()
-                .requestMatchers("/plans/**").permitAll()
-                .requestMatchers("/subscriptions/checkout").permitAll()
-                .requestMatchers("/payment/**").permitAll()
-                .requestMatchers("/subscriptions/**").authenticated()
+                        .requestMatchers("/plans/**").permitAll()
+                        .requestMatchers("/subscriptions/**").authenticated()
+                        .requestMatchers("/payment/**").authenticated()
                         .anyRequest().authenticated());
 
         http.addFilterBefore(jwtAuthenticationFilter, UsernamePasswordAuthenticationFilter.class);

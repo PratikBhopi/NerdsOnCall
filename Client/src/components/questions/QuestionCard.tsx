@@ -58,14 +58,12 @@ export function QuestionCard({
         questionDescription,
         subject,
         status,
-        likesCount,
         createdAt,
         studentName,
         solutionDescription,
         videoUrl,
         imageUrls,
     } = question
-    console.log(question)
     const formattedDate = formatDistanceToNow(new Date(createdAt), {
         addSuffix: true,
     })
@@ -98,137 +96,128 @@ export function QuestionCard({
     }
 
     return (
-        <div className="bg-white border-4 border-black shadow-[8px_8px_0px_0px_black] hover:translate-x-[-2px] hover:translate-y-[-2px] hover:shadow-[10px_10px_0px_0px_black] transition-all duration-200 mb-6 overflow-hidden">
-            {/* Header */}
-            <div className="p-6 border-b-4 border-black bg-yellow-100">
-                <div className="flex justify-between items-start mb-4">
-                    <h3 className="text-xl font-black text-black leading-tight uppercase tracking-wide">
-                        <Link
-                            href={`/questions/${id}`}
-                            className="hover:text-gray-700 transition-colors"
-                        >
-                            {questionTitle}
-                        </Link>
-                    </h3>
-                    <span
-                        className={`px-4 py-2 text-sm font-black border-3 border-black shadow-[2px_2px_0px_0px_black] uppercase tracking-wide ${
-                            status === "PENDING"
-                                ? "bg-orange-300 text-black"
-                                : "bg-green-300 text-black"
-                        }`}
-                    >
-                        {status}
+        <article className="bg-white border-3 border-black shadow-[6px_6px_0px_0px_black] hover:translate-x-[-2px] hover:translate-y-[-2px] hover:shadow-[8px_8px_0px_0px_black] transition-all duration-150 overflow-hidden">
+            {/* Status strip */}
+            <div
+                className={`px-4 sm:px-5 py-2.5 border-b-3 border-black flex items-center justify-between gap-3 ${
+                    status === "PENDING" ? "bg-yellow-200" : "bg-green-200"
+                }`}
+            >
+                <div className="flex items-center gap-2 min-w-0">
+                    <span className="inline-flex items-center gap-1.5 px-2.5 py-0.5 bg-white border-2 border-black text-xs font-black uppercase tracking-wide shadow-[2px_2px_0px_0px_black]">
+                        <BookOpen className="h-3 w-3" />
+                        {subject}
                     </span>
                 </div>
+                <span
+                    className={`inline-flex shrink-0 px-2.5 py-0.5 text-xs font-black border-2 border-black uppercase tracking-wide shadow-[2px_2px_0px_0px_black] ${
+                        status === "PENDING"
+                            ? "bg-orange-300 text-black"
+                            : "bg-cyan-300 text-black"
+                    }`}
+                >
+                    {status}
+                </span>
+            </div>
+
+            {/* Header */}
+            <div className="p-4 sm:p-5 bg-yellow-50">
+                <h3 className="text-lg sm:text-xl font-black text-black leading-snug uppercase tracking-wide mb-3 break-words">
+                    <Link
+                        href={`/questions/${id}`}
+                        className="hover:underline transition-colors"
+                    >
+                        {questionTitle}
+                    </Link>
+                </h3>
 
                 {/* Meta Information */}
-                <div className="flex flex-wrap items-center gap-4 text-sm text-black font-bold">
-                    <div className="flex items-center gap-2 bg-pink-200 px-3 py-1 border-2 border-black">
-                        <User className="h-4 w-4" />
-                        <span className="uppercase tracking-wide">
-                            {studentName}
-                        </span>
+                <div className="flex flex-wrap items-center gap-2 text-xs text-black font-bold">
+                    <div className="flex items-center gap-1.5 bg-pink-200 px-2.5 py-0.5 border-2 border-black shadow-[2px_2px_0px_0px_black]">
+                        <User className="h-3 w-3" />
+                        <span className="uppercase tracking-wide">{studentName}</span>
                     </div>
-                    <div className="flex items-center gap-2 bg-cyan-200 px-3 py-1 border-2 border-black">
-                        <Calendar className="h-4 w-4" />
-                        <span className="uppercase tracking-wide">
-                            {formattedDate}
-                        </span>
-                    </div>
-                    <div className="flex items-center gap-2 bg-green-200 px-3 py-1 border-2 border-black">
-                        <BookOpen className="h-4 w-4" />
-                        <span className="uppercase tracking-wide">
-                            {subject}
-                        </span>
+                    <div className="flex items-center gap-1.5 bg-cyan-200 px-2.5 py-0.5 border-2 border-black shadow-[2px_2px_0px_0px_black]">
+                        <Calendar className="h-3 w-3" />
+                        <span className="uppercase tracking-wide">{formattedDate}</span>
                     </div>
                 </div>
             </div>
 
             {/* Content */}
-            <div className="p-6 bg-white">
-                <p className="text-black font-bold leading-relaxed line-clamp-3">
+            <div className="p-4 sm:p-5 bg-white border-t-3 border-black">
+                <p className="text-black font-bold leading-relaxed line-clamp-3 text-sm sm:text-base break-words">
                     {questionDescription}
                 </p>
 
                 {/* Images */}
                 {imageUrls && imageUrls.length > 0 && (
-                    <div className="mt-4">
-                        <div className="space-y-1">
-                            <p className="text-sm font-medium text-gray-700">
-                                Attached Images:
-                            </p>
-                            {imageUrls.map((imageUrl, index) => (
-                                <div key={index} className="text-sm">
-                                    <a
-                                        href={imageUrl}
-                                        target="_blank"
-                                        rel="noopener noreferrer"
-                                        className="text-blue-600 hover:text-blue-800 underline break-all"
-                                    >
-                                        Image {index + 1}:{" "}
-                                        {imageUrl.length > 50
-                                            ? `${imageUrl.substring(0, 50)}...`
-                                            : imageUrl}
-                                    </a>
-                                </div>
-                            ))}
-                        </div>
+                    <div className="mt-3 space-y-1">
+                        <p className="text-xs font-black uppercase tracking-wide text-black">
+                            Attached Images:
+                        </p>
+                        {imageUrls.map((imageUrl, index) => (
+                            <div key={index} className="text-xs">
+                                <a
+                                    href={imageUrl}
+                                    target="_blank"
+                                    rel="noopener noreferrer"
+                                    className="text-black font-bold underline break-all hover:no-underline"
+                                >
+                                    Image {index + 1}
+                                </a>
+                            </div>
+                        ))}
                     </div>
                 )}
             </div>
 
             {/* Footer */}
-            <div className="px-6 py-4 bg-gray-50 border-t border-gray-100">
-                <div className="flex justify-between items-center">
-                    <div className="flex items-center gap-6">
+            <div className="px-4 sm:px-5 py-3 bg-cyan-50 border-t-3 border-black">
+                <div className="flex flex-col sm:flex-row sm:justify-between sm:items-center gap-3">
+                    <div className="flex items-center gap-3 sm:gap-5">
                         <button
                             onClick={handleLike}
                             disabled={isLiking}
-                            className={`flex items-center gap-2 px-3 py-2 rounded-lg transition-colors ${
-                                isLiking
-                                    ? "opacity-50 cursor-not-allowed"
-                                    : "hover:bg-white hover:shadow-sm text-gray-600 hover:text-blue-600"
+                            className={`inline-flex items-center gap-1.5 px-3 py-1.5 bg-white border-2 border-black shadow-[2px_2px_0px_0px_black] hover:translate-x-[-1px] hover:translate-y-[-1px] hover:shadow-[3px_3px_0px_0px_black] transition-all text-xs font-black uppercase tracking-wide ${
+                                isLiking ? "opacity-50 cursor-not-allowed" : ""
                             }`}
                         >
-                            <ThumbsUp className="h-4 w-4" />
-                            <span className="font-medium">{currentLikes}</span>
+                            <ThumbsUp className="h-3.5 w-3.5" />
+                            <span>{currentLikes}</span>
                         </button>
-                        <div className="flex items-center gap-2 text-gray-600">
-                            <MessageSquare className="h-4 w-4" />
+                        <div className="inline-flex items-center gap-1.5 text-xs font-black uppercase tracking-wide text-black">
+                            <MessageSquare className="h-3.5 w-3.5" />
                             <span>
-                                {solutionDescription
-                                    ? "1 answer"
-                                    : "No answers yet"}
+                                {solutionDescription ? "1 answer" : "No answers yet"}
                             </span>
                         </div>
                     </div>
 
-                    <div className="flex gap-3">
+                    <div className="flex gap-2 flex-wrap">
                         {isTutor && status === "PENDING" && (
                             <Link
                                 href={`/questions/${id}/answer`}
-                                className="inline-flex items-center gap-2 px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors font-medium"
+                                className="inline-flex items-center gap-1.5 px-3 py-1.5 bg-green-300 hover:bg-green-400 text-black border-2 border-black shadow-[2px_2px_0px_0px_black] hover:translate-x-[-1px] hover:translate-y-[-1px] hover:shadow-[3px_3px_0px_0px_black] transition-all text-xs font-black uppercase tracking-wide"
                             >
-                                <Play className="h-4 w-4" />
+                                <Play className="h-3.5 w-3.5" />
                                 Upload Solution
                             </Link>
                         )}
 
                         {status === "RESOLVED" && (
                             <button
-                                onClick={() =>
-                                    setIsSolutionOpen(!isSolutionOpen)
-                                }
-                                className="inline-flex items-center gap-2 px-4 py-2 border border-gray-300 rounded-lg hover:bg-white hover:shadow-sm transition-colors font-medium"
+                                onClick={() => setIsSolutionOpen(!isSolutionOpen)}
+                                className="inline-flex items-center gap-1.5 px-3 py-1.5 bg-white border-2 border-black shadow-[2px_2px_0px_0px_black] hover:translate-x-[-1px] hover:translate-y-[-1px] hover:shadow-[3px_3px_0px_0px_black] transition-all text-xs font-black uppercase tracking-wide"
                             >
                                 {isSolutionOpen ? (
                                     <>
-                                        <EyeOff className="h-4 w-4" />
+                                        <EyeOff className="h-3.5 w-3.5" />
                                         Hide Solution
                                     </>
                                 ) : (
                                     <>
-                                        <Eye className="h-4 w-4" />
+                                        <Eye className="h-3.5 w-3.5" />
                                         Show Solution
                                     </>
                                 )}
@@ -240,21 +229,21 @@ export function QuestionCard({
 
             {/* Solution Accordion */}
             {status === "RESOLVED" && isSolutionOpen && (
-                <div className="border-t border-gray-100">
-                    <div className="p-6 bg-gradient-to-br from-blue-50 to-indigo-50">
-                        <h4 className="text-lg font-bold text-gray-900 mb-4 flex items-center gap-2">
-                            <MessageSquare className="h-5 w-5 text-blue-600" />
+                <div className="border-t-3 border-black">
+                    <div className="p-4 sm:p-5 bg-yellow-50">
+                        <h4 className="text-base sm:text-lg font-black text-black mb-3 uppercase tracking-wide flex items-center gap-2">
+                            <MessageSquare className="h-4 w-4" />
                             Solution
                         </h4>
                         {solutionDescription && (
-                            <div className="prose max-w-none mb-6">
-                                <p className="text-gray-700 leading-relaxed whitespace-pre-wrap">
+                            <div className="mb-4">
+                                <p className="text-black font-bold leading-relaxed whitespace-pre-wrap text-sm sm:text-base break-words">
                                     {solutionDescription}
                                 </p>
                             </div>
                         )}
                         {videoUrl && (
-                            <div className="rounded-lg overflow-hidden bg-black shadow-lg">
+                            <div className="overflow-hidden bg-black border-2 border-black shadow-[3px_3px_0px_0px_black]">
                                 <video
                                     className="w-full max-h-96 object-contain"
                                     controls
@@ -267,6 +256,6 @@ export function QuestionCard({
                     </div>
                 </div>
             )}
-        </div>
+        </article>
     )
 }

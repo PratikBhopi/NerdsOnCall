@@ -1,0 +1,24 @@
+spring:
+    datasource:
+        url: jdbc:postgresql://localhost:5432/nerdsoncall_db
+        username: postgres
+        password: shiv
+        driver-class-name: org.postgresql.Driver
+        hikari:
+            auto-commit: true
+            maximum-pool-size: 5
+            connection-timeout: 30000
+    jpa:
+        database-platform: org.hibernate.dialect.PostgreSQLDialect
+        hibernate:
+            ddl-auto: create-drop
+        show-sql: true
+        database: postgresql
+
+server:
+    port: 8080
+
+logging:
+    level:
+        com.nerdsoncall: DEBUG
+        org.springframework.security: DEBUG

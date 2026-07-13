@@ -7,6 +7,7 @@ import com.nerdsoncall.dto.RegisterRequest;
 import com.nerdsoncall.dto.ResetPasswordRequest;
 import com.nerdsoncall.entity.User;
 import com.nerdsoncall.service.AuthService;
+import com.nerdsoncall.service.TutorStatusService;
 import com.nerdsoncall.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
@@ -25,6 +26,9 @@ public class AuthController {
 
     @Autowired
     private UserService userService;
+
+    @Autowired
+    private TutorStatusService tutorStatusService;
 
     @PostMapping("/register")
     public ResponseEntity<?> register(@RequestBody RegisterRequest request) {
@@ -106,6 +110,9 @@ public class AuthController {
             if (user == null) {
                 return ResponseEntity.badRequest().body("User not found");
             }
+            if (user.getRole() == User.Role.TUTOR) {
+                user.setIsOnline(tutorStatusService.isTutorOnline(user.getId()));
+            }
             
             LoginResponse response = new LoginResponse();
             response.setToken(token);
@@ -138,14 +145,16 @@ public class AuthController {
     @GetMapping("/me")
     public ResponseEntity<?> getCurrentUser(Authentication authentication) {
         try {
-            if (authentication == null) {
-                return ResponseEntity.badRequest().body("Not authenticated");
-            }
-            
             User user = userService.findByEmail(authentication.getName()).orElse(null);
+            if (user == null) {
+                return ResponseEntity.status(404).body("User not found");
+            }
+            if (user.getRole() == User.Role.TUTOR) {
+                user.setIsOnline(tutorStatusService.isTutorOnline(user.getId()));
+            }
             return ResponseEntity.ok(user);
         } catch (Exception e) {
-            return ResponseEntity.badRequest().body("Failed to get user: " + e.getMessage());
+            return ResponseEntity.status(500).body("Failed to get user: " + e.getMessage());
         }
     }
 

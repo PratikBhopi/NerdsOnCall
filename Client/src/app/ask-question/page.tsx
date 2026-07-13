@@ -115,11 +115,11 @@ export default function AskQuestionPage() {
           label: formatSubjectLabel(subject),
         }));
         setTutorSubjects(formattedSubjects);
-        console.log("📚 Tutor subjects:", formattedSubjects);
+        console.log("Tutor subjects:", formattedSubjects);
       } else {
         // If tutor has no subjects, use all subjects as fallback
         setTutorSubjects(ALL_SUBJECTS);
-        console.log("⚠️ Tutor has no subjects, using all subjects as fallback");
+        console.log("Tutor has no subjects, using all subjects as fallback");
       }
     } catch (error) {
       console.error("Error fetching tutor info:", error);
@@ -304,7 +304,7 @@ export default function AskQuestionPage() {
                   </div>
                 ) : (
                   <div className="text-slate-600">
-                    <span className="text-red-600">⚠️</span> Unable to load
+                    <span className="text-red-600"></span> Unable to load
                     tutor information
                   </div>
                 )}

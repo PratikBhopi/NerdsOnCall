@@ -11,6 +11,9 @@ import {
     Upload,
     X,
     Image as ImageIcon,
+    Lightbulb,
+    PencilLine,
+    ImagePlus,
 } from "lucide-react"
 import { BlockLoader } from "@/components/ui/Loader"
 import { api } from "@/lib/api"
@@ -20,23 +23,22 @@ import toast from "react-hot-toast"
 import { useAuth } from "@/context/AuthContext"
 import { getUserFriendlyErrorMessage } from "@/utils/errorMessages"
 
-// These should match the backend Subject enum exactly
 const subjects = [
-    { value: "MATHEMATICS", label: "Mathematics", icon: "📐" },
-    { value: "PHYSICS", label: "Physics", icon: "⚛️" },
-    { value: "CHEMISTRY", label: "Chemistry", icon: "🧪" },
-    { value: "BIOLOGY", label: "Biology", icon: "🧬" },
-    { value: "COMPUTER_SCIENCE", label: "Computer Science", icon: "💻" },
-    { value: "ENGLISH", label: "English", icon: "📚" },
-    { value: "HISTORY", label: "History", icon: "🏛️" },
-    { value: "GEOGRAPHY", label: "Geography", icon: "🌍" },
-    { value: "ECONOMICS", label: "Economics", icon: "💰" },
-    { value: "ACCOUNTING", label: "Accounting", icon: "📊" },
-    { value: "STATISTICS", label: "Statistics", icon: "📈" },
-    { value: "CALCULUS", label: "Calculus", icon: "∫" },
-    { value: "ALGEBRA", label: "Algebra", icon: "𝑥" },
-    { value: "GEOMETRY", label: "Geometry", icon: "△" },
-    { value: "TRIGONOMETRY", label: "Trigonometry", icon: "∠" },
+    { value: "MATHEMATICS", label: "Mathematics" },
+    { value: "PHYSICS", label: "Physics" },
+    { value: "CHEMISTRY", label: "Chemistry" },
+    { value: "BIOLOGY", label: "Biology" },
+    { value: "COMPUTER_SCIENCE", label: "Computer Science" },
+    { value: "ENGLISH", label: "English" },
+    { value: "HISTORY", label: "History" },
+    { value: "GEOGRAPHY", label: "Geography" },
+    { value: "ECONOMICS", label: "Economics" },
+    { value: "ACCOUNTING", label: "Accounting" },
+    { value: "STATISTICS", label: "Statistics" },
+    { value: "CALCULUS", label: "Calculus" },
+    { value: "ALGEBRA", label: "Algebra" },
+    { value: "GEOMETRY", label: "Geometry" },
+    { value: "TRIGONOMETRY", label: "Trigonometry" },
 ]
 
 export default function AskQuestionPage() {
@@ -244,7 +246,7 @@ export default function AskQuestionPage() {
     }
 
     return (
-        <div className="min-h-screen flex flex-col bg-orange-100">
+        <div className="min-h-screen flex flex-col bg-yellow-100">
             <Navbar />
             <main className="flex-grow">
                 {/* Hero Section */}
@@ -300,9 +302,13 @@ export default function AskQuestionPage() {
                                         disabled={isSubmitting}
                                     />
                                     <p className="text-sm text-black font-bold flex items-start gap-2 uppercase tracking-wide">
+<<<<<<< HEAD
                                         <span className="text-black mt-0.5">
                                             💡
                                         </span>
+=======
+                                        <Lightbulb className="h-4 w-4 text-black mt-0.5 flex-shrink-0" />
+>>>>>>> bd0b94a14d85d58fade5e8005cca5953e94e08b2
                                         Keep it clear and concise, like
                                         you&apos;re asking a friend.
                                     </p>
@@ -333,7 +339,7 @@ export default function AskQuestionPage() {
                                                 key={subject.value}
                                                 value={subject.value}
                                             >
-                                                {subject.icon} {subject.label}
+                                                {subject.label}
                                             </option>
                                         ))}
                                     </select>
@@ -359,9 +365,7 @@ export default function AskQuestionPage() {
                                         disabled={isSubmitting}
                                     />
                                     <p className="text-sm text-black font-bold flex items-start gap-2 uppercase tracking-wide">
-                                        <span className="text-black mt-0.5">
-                                            📝
-                                        </span>
+                                        <PencilLine className="h-4 w-4 text-black mt-0.5 flex-shrink-0" />
                                         The more details you provide, the better
                                         answers you&apos;ll receive.
                                     </p>
@@ -443,10 +447,8 @@ export default function AskQuestionPage() {
                                         </div>
                                     )}
 
-                                    <p className="text-sm text-gray-600 flex items-start gap-2">
-                                        <span className="text-blue-600 mt-0.5">
-                                            🖼️
-                                        </span>
+                                    <p className="text-sm text-black font-bold flex items-start gap-2 uppercase tracking-wide">
+                                        <ImagePlus className="h-4 w-4 text-black mt-0.5 flex-shrink-0" />
                                         Add images to help tutors understand
                                         your question better.
                                     </p>

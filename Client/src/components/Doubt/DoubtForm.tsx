@@ -21,7 +21,7 @@ import {
 } from "@/components/ui/select"
 import { api } from "@/lib/api"
 import { Subject } from "@/types"
-import { Upload, X, Loader2 } from "lucide-react"
+import { Upload, X, Loader2, HelpCircle } from "lucide-react"
 import toast from "react-hot-toast"
 
 const subjectsList: Subject[] = [
@@ -184,7 +184,7 @@ export function DoubtForm({
                 <DialogHeader className="bg-[hsl(var(--primary))] text-[hsl(var(--primary-foreground))] -m-6 mb-6 p-6 border-3 border-black shadow-[4px_4px_0px_0px_black]">
                     <div className="flex items-center space-x-3">
                         <div className="w-12 h-12 bg-[hsl(var(--accent))] border-2 border-black shadow-[2px_2px_0px_0px_black] flex items-center justify-center">
-                            <span className="text-2xl">💭</span>
+                            <HelpCircle className="h-6 w-6 text-black" strokeWidth={2.5} />
                         </div>
                         <div>
                             <DialogTitle className="text-[hsl(var(--primary-foreground))] text-xl font-bold">

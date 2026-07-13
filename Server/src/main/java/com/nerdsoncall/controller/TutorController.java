@@ -2,6 +2,7 @@ package com.nerdsoncall.controller;
 
 import com.nerdsoncall.entity.User;
 import com.nerdsoncall.service.UserService;
+import com.nerdsoncall.service.TutorStatusService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -17,6 +18,9 @@ public class TutorController {
 
     @Autowired
     private UserService userService;
+    
+    @Autowired
+    private TutorStatusService tutorStatusService;
 
     @GetMapping
     public ResponseEntity<?> getAllTutors(
@@ -32,14 +36,14 @@ public class TutorController {
                 try {
                     User.Subject subjectEnum = User.Subject.valueOf(subject.toUpperCase());
                     tutors = onlineOnly ? 
-                        userService.findOnlineTutorsBySubject(subjectEnum) : 
+                        tutorStatusService.getOnlineTutorsBySubject(subjectEnum) : 
                         userService.findTopRatedTutorsBySubject(subjectEnum);
                 } catch (IllegalArgumentException e) {
                     return ResponseEntity.badRequest().body("Invalid subject: " + subject);
                 }
             } else {
                 tutors = onlineOnly ? 
-                    userService.findOnlineTutors() : 
+                    tutorStatusService.getOnlineTutors() : 
                     userService.findTopRatedTutors();
             }
             
@@ -115,7 +119,7 @@ public class TutorController {
                 .collect(Collectors.groupingBy(subject -> subject, Collectors.counting()));
             
             // Count online tutors
-            long onlineTutorsCount = userService.findOnlineTutors().size();
+            long onlineTutorsCount = tutorStatusService.getOnlineTutorCount();
             
             // Create stats object
             Map<String, Object> stats = Map.of(

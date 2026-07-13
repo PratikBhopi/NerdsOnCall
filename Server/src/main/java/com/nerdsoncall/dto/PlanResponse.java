@@ -1,7 +1,6 @@
 package com.nerdsoncall.dto;
 
 import lombok.Data;
-import java.time.LocalDateTime;
 
 @Data
 public class PlanResponse {
@@ -11,7 +10,7 @@ public class PlanResponse {
     private Integer sessionsLimit;
     private String description;
     private Boolean isActive;
-    private LocalDateTime createdAt;
-    private LocalDateTime updatedAt;
     private String duration;
-} 
+    /** STARTER, PRO, or PREMIUM */
+    private String planType;
+}

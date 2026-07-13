@@ -34,6 +34,17 @@ import {
     Lock,
     Wifi,
     PlayCircle,
+<<<<<<< HEAD
+=======
+    Sigma,
+    Atom,
+    FlaskConical,
+    Dna,
+    Code2,
+    Languages,
+    LineChart,
+    Banknote,
+>>>>>>> bd0b94a14d85d58fade5e8005cca5953e94e08b2
 } from "lucide-react"
 
 const mainFeatures = [
@@ -123,42 +134,74 @@ const additionalFeatures = [
 const subjects = [
     {
         name: "Mathematics",
+<<<<<<< HEAD
         icon: "📐",
+=======
+        icon: Sigma,
+>>>>>>> bd0b94a14d85d58fade5e8005cca5953e94e08b2
         courses: "Algebra, Calculus, Geometry, Statistics",
     },
     {
         name: "Physics",
+<<<<<<< HEAD
         icon: "⚛️",
+=======
+        icon: Atom,
+>>>>>>> bd0b94a14d85d58fade5e8005cca5953e94e08b2
         courses: "Mechanics, Thermodynamics, Quantum Physics",
     },
     {
         name: "Chemistry",
+<<<<<<< HEAD
         icon: "🧪",
+=======
+        icon: FlaskConical,
+>>>>>>> bd0b94a14d85d58fade5e8005cca5953e94e08b2
         courses: "Organic, Inorganic, Physical Chemistry",
     },
     {
         name: "Biology",
+<<<<<<< HEAD
         icon: "🧬",
+=======
+        icon: Dna,
+>>>>>>> bd0b94a14d85d58fade5e8005cca5953e94e08b2
         courses: "Cell Biology, Genetics, Ecology, Anatomy",
     },
     {
         name: "Computer Science",
+<<<<<<< HEAD
         icon: "💻",
+=======
+        icon: Code2,
+>>>>>>> bd0b94a14d85d58fade5e8005cca5953e94e08b2
         courses: "Programming, Data Structures, Algorithms",
     },
     {
         name: "English",
+<<<<<<< HEAD
         icon: "📚",
+=======
+        icon: Languages,
+>>>>>>> bd0b94a14d85d58fade5e8005cca5953e94e08b2
         courses: "Literature, Grammar, Writing, Communication",
     },
     {
         name: "Economics",
+<<<<<<< HEAD
         icon: "📊",
+=======
+        icon: LineChart,
+>>>>>>> bd0b94a14d85d58fade5e8005cca5953e94e08b2
         courses: "Micro, Macro, International Economics",
     },
     {
         name: "Accounting",
+<<<<<<< HEAD
         icon: "💰",
+=======
+        icon: Banknote,
+>>>>>>> bd0b94a14d85d58fade5e8005cca5953e94e08b2
         courses: "Financial, Management, Cost Accounting",
     },
 ]
@@ -172,7 +215,11 @@ const stats = [
 
 export default function FeaturesPage() {
     return (
+<<<<<<< HEAD
         <div className="min-h-screen bg-orange-100">
+=======
+        <div className="min-h-screen bg-yellow-100">
+>>>>>>> bd0b94a14d85d58fade5e8005cca5953e94e08b2
             <Navbar />
 
             {/* Hero Section */}
@@ -336,6 +383,7 @@ export default function FeaturesPage() {
                     </div>
 
                     <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
+<<<<<<< HEAD
                         {subjects.map((subject, index) => (
                             <Card
                                 key={index}
@@ -354,6 +402,29 @@ export default function FeaturesPage() {
                                 </CardContent>
                             </Card>
                         ))}
+=======
+                        {subjects.map((subject, index) => {
+                            const SubjectIcon = subject.icon
+                            return (
+                                <Card
+                                    key={index}
+                                    className="bg-white border-3 border-black shadow-[4px_4px_0px_0px_black] hover:translate-x-[-2px] hover:translate-y-[-2px] hover:shadow-[6px_6px_0px_0px_black] transition-all duration-300 group overflow-hidden"
+                                >
+                                    <CardContent className="p-5 sm:p-6 text-center">
+                                        <div className="w-14 h-14 mx-auto mb-4 bg-yellow-200 border-2 border-black shadow-[3px_3px_0px_0px_black] flex items-center justify-center">
+                                            <SubjectIcon className="h-7 w-7 text-black" strokeWidth={2.5} />
+                                        </div>
+                                        <h3 className="text-base sm:text-lg font-black text-black mb-2 uppercase tracking-tight break-words leading-tight">
+                                            {subject.name}
+                                        </h3>
+                                        <p className="text-black text-xs sm:text-sm font-bold break-words leading-snug">
+                                            {subject.courses}
+                                        </p>
+                                    </CardContent>
+                                </Card>
+                            )
+                        })}
+>>>>>>> bd0b94a14d85d58fade5e8005cca5953e94e08b2
                     </div>
                 </div>
             </section>

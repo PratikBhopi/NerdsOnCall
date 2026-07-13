@@ -18,7 +18,7 @@ public class WelcomeController {
         Map<String, Object> response = new HashMap<>();
         response.put("service", "NerdsOnCall Backend API");
         response.put("version", "1.0.0");
-        response.put("status", "🚀 Running Successfully");
+        response.put("status", "Running");
         response.put("timestamp", LocalDateTime.now());
         response.put("description", "Real-Time Doubt-Solving Platform Backend");
 
@@ -26,16 +26,21 @@ public class WelcomeController {
         endpoints.put("health", "/health");
         endpoints.put("authentication", "/auth/*");
         endpoints.put("users", "/users/*");
+        endpoints.put("tutors", "/tutors/*");
         endpoints.put("sessions", "/sessions/*");
         endpoints.put("doubts", "/doubts/*");
+        endpoints.put("questions", "/api/questions/*");
+        endpoints.put("plans", "/plans/*");
         endpoints.put("subscriptions", "/subscriptions/*");
-        endpoints.put("payments", "/payments/*");
+        endpoints.put("payment", "/payment/*");
         endpoints.put("feedback", "/feedback/*");
-        endpoints.put("websocket", "/ws");
+        endpoints.put("dashboard", "/dashboard/*");
+        endpoints.put("uploads", "/upload/*");
+        endpoints.put("websocket-webrtc", "/ws/webrtc");
+        endpoints.put("websocket-session", "/ws/session");
 
         response.put("available_endpoints", endpoints);
-        response.put("api_base_url", "/");
-        response.put("documentation", "Visit /health to check service status");
+        response.put("documentation", "GET /health for service status");
 
         return ResponseEntity.ok(response);
     }

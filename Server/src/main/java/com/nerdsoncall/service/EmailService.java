@@ -96,20 +96,20 @@ public class EmailService {
             <div style=\"max-width: 600px; margin: auto; background: #FFFF00; padding: 0; border: 5px solid #000; box-shadow: 8px 8px 0px #000; transform: rotate(-1deg);\">
                 <!-- Header Section -->
                 <div style=\"background: #FF6B9D; padding: 25px; border-bottom: 5px solid #000; transform: rotate(1deg); margin: -2px -2px 0 -2px;\">
-                    <h1 style=\"font-family: 'Inter', Arial, sans-serif; font-weight: 900; font-size: 28px; color: #000; margin: 0; text-transform: uppercase; letter-spacing: 2px; text-shadow: 3px 3px 0px #FFF;\">🎉 NERDS ON CALL</h1>
+                    <h1 style=\"font-family: 'Inter', Arial, sans-serif; font-weight: 900; font-size: 28px; color: #000; margin: 0; text-transform: uppercase; letter-spacing: 2px; text-shadow: 3px 3px 0px #FFF;\">NERDS ON CALL</h1>
                     <p style=\"font-weight: 700; font-size: 16px; color: #000; margin: 5px 0 0 0; text-transform: uppercase;\">SUBSCRIPTION CONFIRMED!</p>
                 </div>
 
                 <!-- Main Content -->
                 <div style=\"padding: 30px; background: #FFFF00;\">
                     <div style=\"background: #66D9EF; padding: 20px; border: 4px solid #000; box-shadow: 4px 4px 0px #000; margin-bottom: 20px; transform: rotate(0.5deg);\">
-                        <h2 style=\"font-family: 'Inter', Arial, sans-serif; font-weight: 900; font-size: 20px; color: #000; margin: 0 0 10px 0; text-transform: uppercase;\">Hey %s! 👋</h2>
+                        <h2 style=\"font-family: 'Inter', Arial, sans-serif; font-weight: 900; font-size: 20px; color: #000; margin: 0 0 10px 0; text-transform: uppercase;\">Hey %s! </h2>
                         <p style=\"font-weight: 700; color: #000; margin: 0; font-size: 16px;\">Your subscription is LIVE and ready to rock!</p>
                     </div>
 
                     <!-- Receipt Details -->
                     <div style=\"background: #FFF; padding: 25px; border: 4px solid #000; box-shadow: 6px 6px 0px #000; margin-bottom: 20px; transform: rotate(-0.5deg);\">
-                        <h3 style=\"font-family: 'Inter', Arial, sans-serif; font-weight: 900; font-size: 18px; color: #000; margin: 0 0 15px 0; text-transform: uppercase; border-bottom: 3px solid #000; padding-bottom: 10px;\">📋 RECEIPT DETAILS</h3>
+                        <h3 style=\"font-family: 'Inter', Arial, sans-serif; font-weight: 900; font-size: 18px; color: #000; margin: 0 0 15px 0; text-transform: uppercase; border-bottom: 3px solid #000; padding-bottom: 10px;\">RECEIPT DETAILS</h3>
                         <div style=\"display: grid; gap: 10px;\">
                             <div style=\"background: #FFE066; padding: 10px; border: 2px solid #000;\">
                                 <strong style=\"color: #000; text-transform: uppercase;\">Receipt ID:</strong> <span style=\"font-weight: 900; color: #000;\">#%06d</span>
@@ -121,7 +121,7 @@ public class EmailService {
                                 <strong style=\"color: #000; text-transform: uppercase;\">Price:</strong> <span style=\"font-weight: 900; color: #000; font-size: 18px;\">₹%.2f</span>
                             </div>
                             <div style=\"background: #90EE90; padding: 10px; border: 2px solid #000;\">
-                                <strong style=\"color: #000; text-transform: uppercase;\">Status:</strong> <span style=\"font-weight: 900; color: #000;\">%s ✅</span>
+                                <strong style=\"color: #000; text-transform: uppercase;\">Status:</strong> <span style=\"font-weight: 900; color: #000;\">%s </span>
                             </div>
                             <div style=\"background: #FFB347; padding: 10px; border: 2px solid #000;\">
                                 <strong style=\"color: #000; text-transform: uppercase;\">Duration:</strong> <span style=\"font-weight: 900; color: #000;\">%s → %s</span>
@@ -133,14 +133,14 @@ public class EmailService {
 
                     <!-- About Section -->
                     <div style=\"background: #FF6B9D; padding: 20px; border: 4px solid #000; box-shadow: 4px 4px 0px #000; margin-bottom: 20px; transform: rotate(0.3deg);\">
-                        <h3 style=\"font-family: 'Inter', Arial, sans-serif; font-weight: 900; font-size: 16px; color: #000; margin: 0 0 10px 0; text-transform: uppercase;\">🚀 WHAT'S NEXT?</h3>
-                        <p style=\"font-weight: 700; color: #000; margin: 0; line-height: 1.4;\"><strong>NerdsOnCall</strong> connects you with expert tutors via live video calls, interactive whiteboards, and screen sharing. Time to crush those doubts! 💪</p>
+                        <h3 style=\"font-family: 'Inter', Arial, sans-serif; font-weight: 900; font-size: 16px; color: #000; margin: 0 0 10px 0; text-transform: uppercase;\">WHAT'S NEXT?</h3>
+                        <p style=\"font-weight: 700; color: #000; margin: 0; line-height: 1.4;\"><strong>NerdsOnCall</strong> connects you with expert tutors via live video calls, interactive whiteboards, and screen sharing. Time to crush those doubts! </p>
                     </div>
 
                     <!-- Footer -->
                     <div style=\"background: #000; color: #FFFF00; padding: 20px; border: 4px solid #000; text-align: center; transform: rotate(-0.2deg);\">
-                        <p style=\"font-weight: 900; margin: 0; text-transform: uppercase; font-size: 16px;\">Questions? Just reply! 📧</p>
-                        <p style=\"font-weight: 700; margin: 10px 0 0 0;\">— The NerdsOnCall Squad 🤓</p>
+                        <p style=\"font-weight: 900; margin: 0; text-transform: uppercase; font-size: 16px;\">Questions? Just reply! </p>
+                        <p style=\"font-weight: 700; margin: 10px 0 0 0;\">— The NerdsOnCall Squad </p>
                     </div>
                 </div>
             </div>
@@ -162,7 +162,7 @@ public class EmailService {
         MimeMessageHelper helper = new MimeMessageHelper(message, true, "UTF-8");
 
         helper.setTo(to);
-        helper.setSubject("🎉 Subscription Confirmed - Payment Receipt Attached | NerdsOnCall");
+        helper.setSubject("Subscription Confirmed - Payment Receipt Attached | NerdsOnCall");
 
         // Build greeting email body with newbrutalism styling
         String emailBody = """
@@ -176,39 +176,39 @@ public class EmailService {
             <div style="max-width: 600px; margin: auto; background: #FFFF00; padding: 0; border: 5px solid #000; box-shadow: 8px 8px 0px #000; transform: rotate(-1deg);">
                 <!-- Header Section -->
                 <div style="background: #FF6B9D; padding: 25px; border-bottom: 5px solid #000; transform: rotate(1deg); margin: -2px -2px 0 -2px;">
-                    <h1 style="font-family: 'Inter', Arial, sans-serif; font-weight: 900; font-size: 28px; color: #000; margin: 0; text-transform: uppercase; letter-spacing: 2px; text-shadow: 3px 3px 0px #FFF;">🎉 NERDS ON CALL</h1>
+                    <h1 style="font-family: 'Inter', Arial, sans-serif; font-weight: 900; font-size: 28px; color: #000; margin: 0; text-transform: uppercase; letter-spacing: 2px; text-shadow: 3px 3px 0px #FFF;">NERDS ON CALL</h1>
                     <p style="font-weight: 700; font-size: 16px; color: #000; margin: 5px 0 0 0; text-transform: uppercase;">PAYMENT CONFIRMED!</p>
                 </div>
 
                 <!-- Main Content -->
                 <div style="padding: 30px; background: #FFFF00;">
                     <div style="background: #66D9EF; padding: 20px; border: 4px solid #000; box-shadow: 4px 4px 0px #000; margin-bottom: 20px; transform: rotate(0.5deg);">
-                        <h2 style="font-family: 'Inter', Arial, sans-serif; font-weight: 900; font-size: 20px; color: #000; margin: 0 0 10px 0; text-transform: uppercase;">Hey %s! 🚀</h2>
-                        <p style="font-weight: 700; color: #000; margin: 0; font-size: 16px;">Your payment is CONFIRMED and your subscription is LIVE! Welcome to the squad! 💪</p>
+                        <h2 style="font-family: 'Inter', Arial, sans-serif; font-weight: 900; font-size: 20px; color: #000; margin: 0 0 10px 0; text-transform: uppercase;">Hey %s! </h2>
+                        <p style="font-weight: 700; color: #000; margin: 0; font-size: 16px;">Your payment is CONFIRMED and your subscription is LIVE! Welcome to the squad! </p>
                     </div>
 
                     <!-- PDF Info Section -->
                     <div style="background: #FFF; padding: 25px; border: 4px solid #000; box-shadow: 6px 6px 0px #000; margin-bottom: 20px; transform: rotate(-0.5deg);">
-                        <h3 style="font-family: 'Inter', Arial, sans-serif; font-weight: 900; font-size: 18px; color: #000; margin: 0 0 15px 0; text-transform: uppercase; border-bottom: 3px solid #000; padding-bottom: 10px;">📄 YOUR RECEIPT IS ATTACHED!</h3>
+                        <h3 style="font-family: 'Inter', Arial, sans-serif; font-weight: 900; font-size: 18px; color: #000; margin: 0 0 15px 0; text-transform: uppercase; border-bottom: 3px solid #000; padding-bottom: 10px;">YOUR RECEIPT IS ATTACHED!</h3>
                         <p style="font-weight: 700; color: #000; margin: 0 0 15px 0;">Check out your detailed PDF receipt with all the important stuff:</p>
                         <div style="display: grid; gap: 8px;">
-                            <div style="background: #FFE066; padding: 8px; border: 2px solid #000; font-weight: 700; color: #000;">✓ Subscription plan details</div>
-                            <div style="background: #FF6B9D; padding: 8px; border: 2px solid #000; font-weight: 700; color: #000;">✓ Payment information</div>
-                            <div style="background: #66D9EF; padding: 8px; border: 2px solid #000; font-weight: 700; color: #000;">✓ Start and end dates</div>
-                            <div style="background: #90EE90; padding: 8px; border: 2px solid #000; font-weight: 700; color: #000;">✓ Session limits and usage</div>
+                            <div style="background: #FFE066; padding: 8px; border: 2px solid #000; font-weight: 700; color: #000;">Subscription plan details</div>
+                            <div style="background: #FF6B9D; padding: 8px; border: 2px solid #000; font-weight: 700; color: #000;">Payment information</div>
+                            <div style="background: #66D9EF; padding: 8px; border: 2px solid #000; font-weight: 700; color: #000;">Start and end dates</div>
+                            <div style="background: #90EE90; padding: 8px; border: 2px solid #000; font-weight: 700; color: #000;">Session limits and usage</div>
                         </div>
                     </div>
 
                     <!-- About Section -->
                     <div style="background: #FF6B9D; padding: 20px; border: 4px solid #000; box-shadow: 4px 4px 0px #000; margin-bottom: 20px; transform: rotate(0.3deg);">
-                        <h3 style="font-family: 'Inter', Arial, sans-serif; font-weight: 900; font-size: 16px; color: #000; margin: 0 0 10px 0; text-transform: uppercase;">🚀 READY TO LEARN?</h3>
-                        <p style="font-weight: 700; color: #000; margin: 0; line-height: 1.4;"><strong>NerdsOnCall</strong> connects you with expert tutors via live video calls, interactive whiteboards, and screen sharing. Start booking sessions and crush those doubts! 💪</p>
+                        <h3 style="font-family: 'Inter', Arial, sans-serif; font-weight: 900; font-size: 16px; color: #000; margin: 0 0 10px 0; text-transform: uppercase;">READY TO LEARN?</h3>
+                        <p style="font-weight: 700; color: #000; margin: 0; line-height: 1.4;"><strong>NerdsOnCall</strong> connects you with expert tutors via live video calls, interactive whiteboards, and screen sharing. Start booking sessions and crush those doubts! </p>
                     </div>
 
                     <!-- Footer -->
                     <div style="background: #000; color: #FFFF00; padding: 20px; border: 4px solid #000; text-align: center; transform: rotate(-0.2deg);">
-                        <p style="font-weight: 900; margin: 0; text-transform: uppercase; font-size: 16px;">Questions? Just reply! 📧</p>
-                        <p style="font-weight: 700; margin: 10px 0 0 0;">— The NerdsOnCall Squad 🤓</p>
+                        <p style="font-weight: 900; margin: 0; text-transform: uppercase; font-size: 16px;">Questions? Just reply! </p>
+                        <p style="font-weight: 700; margin: 10px 0 0 0;">— The NerdsOnCall Squad </p>
                     </div>
                 </div>
             </div>
@@ -239,7 +239,7 @@ public class EmailService {
     }
 
     public void sendMonthlyPayoutMail(String to, String tutorName, double amount, String month, String billingDate, String transactionId) throws MessagingException {
-        String subject = "💰 Payout Processed - Payment Receipt Attached | NerdsOnCall";
+        String subject = "Payout Processed - Payment Receipt Attached | NerdsOnCall";
         String body = """
             <html>
             <head>
@@ -251,20 +251,20 @@ public class EmailService {
                 <div style="max-width: 600px; margin: auto; background: #FFFF00; padding: 0; border: 5px solid #000; box-shadow: 8px 8px 0px #000; transform: rotate(-1deg);">
                     <!-- Header Section -->
                     <div style="background: #66D9EF; padding: 25px; border-bottom: 5px solid #000; transform: rotate(1deg); margin: -2px -2px 0 -2px;">
-                        <h1 style="font-family: 'Inter', Arial, sans-serif; font-weight: 900; font-size: 28px; color: #000; margin: 0; text-transform: uppercase; letter-spacing: 2px; text-shadow: 3px 3px 0px #FFF;">💰 NERDS ON CALL</h1>
+                        <h1 style="font-family: 'Inter', Arial, sans-serif; font-weight: 900; font-size: 28px; color: #000; margin: 0; text-transform: uppercase; letter-spacing: 2px; text-shadow: 3px 3px 0px #FFF;">NERDS ON CALL</h1>
                         <p style="font-weight: 700; font-size: 16px; color: #000; margin: 5px 0 0 0; text-transform: uppercase;">PAYOUT PROCESSED!</p>
                     </div>
 
                     <!-- Main Content -->
                     <div style="padding: 30px; background: #FFFF00;">
                         <div style="background: #FF6B9D; padding: 20px; border: 4px solid #000; box-shadow: 4px 4px 0px #000; margin-bottom: 20px; transform: rotate(0.5deg);">
-                            <h2 style="font-family: 'Inter', Arial, sans-serif; font-weight: 900; font-size: 20px; color: #000; margin: 0 0 10px 0; text-transform: uppercase;">Hey %s! 🎉</h2>
-                            <p style="font-weight: 700; color: #000; margin: 0; font-size: 16px;">Your monthly payout is READY and has been processed! Time to celebrate! 💪</p>
+                            <h2 style="font-family: 'Inter', Arial, sans-serif; font-weight: 900; font-size: 20px; color: #000; margin: 0 0 10px 0; text-transform: uppercase;">Hey %s! </h2>
+                            <p style="font-weight: 700; color: #000; margin: 0; font-size: 16px;">Your monthly payout is READY and has been processed! Time to celebrate! </p>
                         </div>
 
                         <!-- Payout Details -->
                         <div style="background: #FFF; padding: 25px; border: 4px solid #000; box-shadow: 6px 6px 0px #000; margin-bottom: 20px; transform: rotate(-0.5deg);">
-                            <h3 style="font-family: 'Inter', Arial, sans-serif; font-weight: 900; font-size: 18px; color: #000; margin: 0 0 15px 0; text-transform: uppercase; border-bottom: 3px solid #000; padding-bottom: 10px;">💰 PAYOUT DETAILS</h3>
+                            <h3 style="font-family: 'Inter', Arial, sans-serif; font-weight: 900; font-size: 18px; color: #000; margin: 0 0 15px 0; text-transform: uppercase; border-bottom: 3px solid #000; padding-bottom: 10px;">PAYOUT DETAILS</h3>
                             <div style="display: grid; gap: 10px;">
                                 <div style="background: #FFE066; padding: 10px; border: 2px solid #000;">
                                     <strong style="color: #000; text-transform: uppercase;">Amount:</strong> <span style="font-weight: 900; color: #000; font-size: 18px;">₹%.2f</span>
@@ -283,20 +283,20 @@ public class EmailService {
 
                         <!-- PDF Info Section -->
                         <div style="background: #FFF; padding: 25px; border: 4px solid #000; box-shadow: 6px 6px 0px #000; margin-bottom: 20px; transform: rotate(0.3deg);">
-                            <h3 style="font-family: 'Inter', Arial, sans-serif; font-weight: 900; font-size: 18px; color: #000; margin: 0 0 15px 0; text-transform: uppercase; border-bottom: 3px solid #000; padding-bottom: 10px;">📄 YOUR RECEIPT IS ATTACHED!</h3>
-                            <p style="font-weight: 700; color: #000; margin: 0;">Check out your detailed PDF receipt with all the important payout information! 🎯</p>
+                            <h3 style="font-family: 'Inter', Arial, sans-serif; font-weight: 900; font-size: 18px; color: #000; margin: 0 0 15px 0; text-transform: uppercase; border-bottom: 3px solid #000; padding-bottom: 10px;">YOUR RECEIPT IS ATTACHED!</h3>
+                            <p style="font-weight: 700; color: #000; margin: 0;">Check out your detailed PDF receipt with all the important payout information! </p>
                         </div>
 
                         <!-- Thank You Section -->
                         <div style="background: #FF6B9D; padding: 20px; border: 4px solid #000; box-shadow: 4px 4px 0px #000; margin-bottom: 20px; transform: rotate(-0.3deg);">
-                            <h3 style="font-family: 'Inter', Arial, sans-serif; font-weight: 900; font-size: 16px; color: #000; margin: 0 0 10px 0; text-transform: uppercase;">🚀 THANK YOU!</h3>
-                            <p style="font-weight: 700; color: #000; margin: 0; line-height: 1.4;">Your dedication to helping students learn and grow is truly appreciated. Keep being awesome! 🌟</p>
+                            <h3 style="font-family: 'Inter', Arial, sans-serif; font-weight: 900; font-size: 16px; color: #000; margin: 0 0 10px 0; text-transform: uppercase;">THANK YOU!</h3>
+                            <p style="font-weight: 700; color: #000; margin: 0; line-height: 1.4;">Your dedication to helping students learn and grow is truly appreciated. Keep being awesome! </p>
                         </div>
 
                         <!-- Footer -->
                         <div style="background: #000; color: #FFFF00; padding: 20px; border: 4px solid #000; text-align: center; transform: rotate(-0.2deg);">
-                            <p style="font-weight: 900; margin: 0; text-transform: uppercase; font-size: 16px;">Questions? Just reply! 📧</p>
-                            <p style="font-weight: 700; margin: 10px 0 0 0;">— The NerdsOnCall Squad 🤓</p>
+                            <p style="font-weight: 900; margin: 0; text-transform: uppercase; font-size: 16px;">Questions? Just reply! </p>
+                            <p style="font-weight: 700; margin: 10px 0 0 0;">— The NerdsOnCall Squad </p>
                         </div>
                     </div>
                 </div>
@@ -318,7 +318,7 @@ public class EmailService {
         String month = payout.getPeriodStart().getMonth().name() + " " + payout.getPeriodStart().getYear();
         String billingDate = payout.getPeriodStart().toLocalDate().toString();
 
-        String subject = "💰 Payout Processed - Payment Receipt Attached | NerdsOnCall";
+        String subject = "Payout Processed - Payment Receipt Attached | NerdsOnCall";
         String body = buildTutorPayoutEmailBody(tutorName, payout, month, billingDate);
 
         // Generate PDF receipt
@@ -351,20 +351,20 @@ public class EmailService {
             <div style="max-width: 600px; margin: auto; background: #FFFF00; padding: 0; border: 5px solid #000; box-shadow: 8px 8px 0px #000; transform: rotate(-1deg);">
                 <!-- Header Section -->
                 <div style="background: #66D9EF; padding: 25px; border-bottom: 5px solid #000; transform: rotate(1deg); margin: -2px -2px 0 -2px;">
-                    <h1 style="font-family: 'Inter', Arial, sans-serif; font-weight: 900; font-size: 28px; color: #000; margin: 0; text-transform: uppercase; letter-spacing: 2px; text-shadow: 3px 3px 0px #FFF;">💰 NERDS ON CALL</h1>
+                    <h1 style="font-family: 'Inter', Arial, sans-serif; font-weight: 900; font-size: 28px; color: #000; margin: 0; text-transform: uppercase; letter-spacing: 2px; text-shadow: 3px 3px 0px #FFF;">NERDS ON CALL</h1>
                     <p style="font-weight: 700; font-size: 16px; color: #000; margin: 5px 0 0 0; text-transform: uppercase;">PAYOUT PROCESSED!</p>
                 </div>
 
                 <!-- Main Content -->
                 <div style="padding: 30px; background: #FFFF00;">
                     <div style="background: #FF6B9D; padding: 20px; border: 4px solid #000; box-shadow: 4px 4px 0px #000; margin-bottom: 20px; transform: rotate(0.5deg);">
-                        <h2 style="font-family: 'Inter', Arial, sans-serif; font-weight: 900; font-size: 20px; color: #000; margin: 0 0 10px 0; text-transform: uppercase;">Hey %s! 🎉</h2>
-                        <p style="font-weight: 700; color: #000; margin: 0; font-size: 16px;">Your monthly payout is READY and has been processed! Time to celebrate! 💪</p>
+                        <h2 style="font-family: 'Inter', Arial, sans-serif; font-weight: 900; font-size: 20px; color: #000; margin: 0 0 10px 0; text-transform: uppercase;">Hey %s! </h2>
+                        <p style="font-weight: 700; color: #000; margin: 0; font-size: 16px;">Your monthly payout is READY and has been processed! Time to celebrate! </p>
                     </div>
 
                     <!-- Payout Details -->
                     <div style="background: #FFF; padding: 25px; border: 4px solid #000; box-shadow: 6px 6px 0px #000; margin-bottom: 20px; transform: rotate(-0.5deg);">
-                        <h3 style="font-family: 'Inter', Arial, sans-serif; font-weight: 900; font-size: 18px; color: #000; margin: 0 0 15px 0; text-transform: uppercase; border-bottom: 3px solid #000; padding-bottom: 10px;">💰 PAYOUT DETAILS</h3>
+                        <h3 style="font-family: 'Inter', Arial, sans-serif; font-weight: 900; font-size: 18px; color: #000; margin: 0 0 15px 0; text-transform: uppercase; border-bottom: 3px solid #000; padding-bottom: 10px;">PAYOUT DETAILS</h3>
                         <div style="display: grid; gap: 10px;">
                             <div style="background: #FFE066; padding: 10px; border: 2px solid #000;">
                                 <strong style="color: #000; text-transform: uppercase;">Amount:</strong> <span style="font-weight: 900; color: #000; font-size: 18px;">₹%.2f</span>
@@ -383,20 +383,20 @@ public class EmailService {
 
                     <!-- PDF Info Section -->
                     <div style="background: #FFF; padding: 25px; border: 4px solid #000; box-shadow: 6px 6px 0px #000; margin-bottom: 20px; transform: rotate(0.3deg);">
-                        <h3 style="font-family: 'Inter', Arial, sans-serif; font-weight: 900; font-size: 18px; color: #000; margin: 0 0 15px 0; text-transform: uppercase; border-bottom: 3px solid #000; padding-bottom: 10px;">📄 YOUR RECEIPT IS ATTACHED!</h3>
-                        <p style="font-weight: 700; color: #000; margin: 0;">Check out your detailed PDF receipt with all the important payout information! 🎯</p>
+                        <h3 style="font-family: 'Inter', Arial, sans-serif; font-weight: 900; font-size: 18px; color: #000; margin: 0 0 15px 0; text-transform: uppercase; border-bottom: 3px solid #000; padding-bottom: 10px;">YOUR RECEIPT IS ATTACHED!</h3>
+                        <p style="font-weight: 700; color: #000; margin: 0;">Check out your detailed PDF receipt with all the important payout information! </p>
                     </div>
 
                     <!-- Thank You Section -->
                     <div style="background: #FF6B9D; padding: 20px; border: 4px solid #000; box-shadow: 4px 4px 0px #000; margin-bottom: 20px; transform: rotate(-0.3deg);">
-                        <h3 style="font-family: 'Inter', Arial, sans-serif; font-weight: 900; font-size: 16px; color: #000; margin: 0 0 10px 0; text-transform: uppercase;">🚀 THANK YOU!</h3>
-                        <p style="font-weight: 700; color: #000; margin: 0; line-height: 1.4;">Your dedication to helping students learn and grow is truly appreciated. Keep being awesome! 🌟</p>
+                        <h3 style="font-family: 'Inter', Arial, sans-serif; font-weight: 900; font-size: 16px; color: #000; margin: 0 0 10px 0; text-transform: uppercase;">THANK YOU!</h3>
+                        <p style="font-weight: 700; color: #000; margin: 0; line-height: 1.4;">Your dedication to helping students learn and grow is truly appreciated. Keep being awesome! </p>
                     </div>
 
                     <!-- Footer -->
                     <div style="background: #000; color: #FFFF00; padding: 20px; border: 4px solid #000; text-align: center; transform: rotate(-0.2deg);">
-                        <p style="font-weight: 900; margin: 0; text-transform: uppercase; font-size: 16px;">Questions? Just reply! 📧</p>
-                        <p style="font-weight: 700; margin: 10px 0 0 0;">— The NerdsOnCall Squad 🤓</p>
+                        <p style="font-weight: 900; margin: 0; text-transform: uppercase; font-size: 16px;">Questions? Just reply! </p>
+                        <p style="font-weight: 700; margin: 10px 0 0 0;">— The NerdsOnCall Squad </p>
                     </div>
                 </div>
             </div>

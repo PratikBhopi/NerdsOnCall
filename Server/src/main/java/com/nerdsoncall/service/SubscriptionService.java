@@ -57,7 +57,7 @@ public class SubscriptionService {
             Subscription subscription = activeSubscription.get();
             subscription.setSessionsUsed(subscription.getSessionsUsed() + 1);
             subscriptionRepository.save(subscription);
-            System.out.println("📈 Session usage incremented for user: " + user.getEmail() + " - New count: " + subscription.getSessionsUsed());
+            System.out.println("Session usage incremented for user: " + user.getEmail() + " - New count: " + subscription.getSessionsUsed());
         }
     }
 
@@ -69,9 +69,9 @@ public class SubscriptionService {
             if (subscription.getSessionsUsed() > 0) {
                 subscription.setSessionsUsed(subscription.getSessionsUsed() - 1);
                 subscriptionRepository.save(subscription);
-                System.out.println("📉 Session usage decremented for user: " + user.getEmail() + " - New count: " + subscription.getSessionsUsed());
+                System.out.println("Session usage decremented for user: " + user.getEmail() + " - New count: " + subscription.getSessionsUsed());
             } else {
-                System.out.println("⚠️ Cannot decrement session usage below 0 for user: " + user.getEmail());
+                System.out.println("Cannot decrement session usage below 0 for user: " + user.getEmail());
             }
         }
     }
