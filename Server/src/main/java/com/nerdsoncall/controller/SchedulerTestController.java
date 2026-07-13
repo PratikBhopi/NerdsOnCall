@@ -20,24 +20,25 @@ public class SchedulerTestController {
     /**
      * Manual trigger for session reset - for testing purposes
      */
+
     @PostMapping("/reset-sessions")
     public ResponseEntity<?> manualResetSessions() {
         try {
             System.out.println("Manual trigger for session reset at: " + LocalDateTime.now());
             subscriptionSchedulerService.resetDailySessionUsage();
-            
+
             Map<String, Object> response = new HashMap<>();
             response.put("success", true);
             response.put("message", "Session reset triggered manually");
             response.put("timestamp", LocalDateTime.now());
-            
+
             return ResponseEntity.ok(response);
         } catch (Exception e) {
             Map<String, Object> response = new HashMap<>();
             response.put("success", false);
             response.put("message", "Error during manual session reset: " + e.getMessage());
             response.put("timestamp", LocalDateTime.now());
-            
+
             return ResponseEntity.badRequest().body(response);
         }
     }
@@ -51,7 +52,7 @@ public class SchedulerTestController {
         response.put("currentTime", LocalDateTime.now());
         response.put("schedulerEnabled", true);
         response.put("message", "Scheduler service is running");
-        
+
         return ResponseEntity.ok(response);
     }
 
@@ -63,7 +64,7 @@ public class SchedulerTestController {
         Map<String, Object> response = new HashMap<>();
         response.put("message", "Test controller is working");
         response.put("timestamp", LocalDateTime.now());
-        
+
         return ResponseEntity.ok(response);
     }
 }
